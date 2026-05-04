@@ -1,0 +1,19 @@
+@use "mixins" as *;
+
+#app, html, body {
+  /* -webkit-font-smoothing: antialiased; */
+  font-size: 16px;
+  font-family: "Times New Roman", Times, serif; 
+  font-weight: normal;
+  line-height: var(--line-height);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: var(--letter-spacing);
+  @include tablet-up {
+    font-size: 18px;
+  }
+  ::selection {
+    background: black;
+    color: white;
+  }
+}

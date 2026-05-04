@@ -1,0 +1,49 @@
+{
+  "name": "frontend",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "@nuxt/fonts": "^0.12.1",
+    "@nuxt/icon": "^2.2.0",
+    "@nuxt/kit": "^4.4.2",
+    "@nuxtjs/robots": "^5.6.7",
+    "@nuxtjs/sanity": "2.2.0",
+    "@nuxtjs/sitemap": "^7.5.1",
+    "@pinia/nuxt": "0.11.3",
+    "@sanity/client": "^7.19.0",
+    "@sanity/image-url": "^1.0.2",
+    "@vueuse/core": "^14.1.0",
+    "@vueuse/nuxt": "^14.1.0",
+    "dotenv": "^17.2.3",
+    "lazysizes": "^5.3.2",
+    "nuxt-svgo-loader": "^0.6.3",
+    "ohash": "^2.0.11",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1"
+  },
+  "devDependencies": {
+    "@csstools/postcss-global-data": "^4.0.0",
+    "@iconify-json/ph": "^1.2.2",
+    "@nuxt/eslint": "^1.12.1",
+    "@nuxthub/core": "0.10.4",
+    "eslint": "^9.39.2",
+    "nuxt": "^4.4.2",
+    "postcss-custom-media": "^11.0.6",
+    "postcss-nested": "^7.0.2",
+    "sass": "^1.70.0",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4",
+    "wrangler": "^4.54.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.6.1"
+  }
+}

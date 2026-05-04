@@ -1,0 +1,11 @@
+:root {
+  --red: rgba(155, 0, 0, 1);
+  --red-90: rgba(155, 0, 0, 0.9);
+  --tm: 1rem;
+  --line-height: 1.25;
+  --letter-spacing: 0em;
+  --lh-em: calc(var(--line-height) * 1em);
+  --lh-rem: calc(var(--line-height) * 1rem);
+  --margin-em: calc(var(--line-height) * 1em * 1.25);
+  --margin-rem: calc(var(--line-height) * 1rem * 1.25);
+}

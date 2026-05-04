@@ -1,0 +1,41 @@
+@mixin tablet-up {
+  @media (min-width: 760px) {
+    @content;
+  }
+}
+
+@mixin laptop-up {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin desktop-up {
+  @media (min-width: 1440px) {
+    @content;
+  }
+}
+
+@mixin underline {
+  text-decoration: underline;
+  text-decoration-thickness: 5%;
+  text-underline-offset: 15%;
+}
+
+@mixin line-through {
+  text-decoration: line-through;
+  text-decoration-thickness: 10%;
+}
+
+@mixin text-width {
+  width: 100%;
+  @include tablet-up {
+    max-width: 36rem;
+  }
+  @include laptop-up {
+    max-width: 36rem;
+  }
+  @include desktop-up {
+    max-width: 36rem;
+  }
+}

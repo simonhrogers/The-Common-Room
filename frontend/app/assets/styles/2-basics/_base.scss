@@ -1,0 +1,28 @@
+html {
+  background-color: white;
+}
+
+#app, html, body {
+  max-width: 100%;
+  display: block;
+  overscroll-behavior: none;
+  user-select: none;
+}
+
+.lazyfade {
+  /* transition: opacity 0.25s ease-out; */
+}
+
+.lazyload, .lazyloading {
+  opacity: 0;
+  background-color: transparent;
+}
+
+.lazyloaded {
+  opacity: 1;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
