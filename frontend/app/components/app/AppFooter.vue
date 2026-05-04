@@ -18,7 +18,7 @@
         {{ link.label }}
       </NuxtLink>
       <span class="app-footer-copy">
-        © 2026 Bella Bruton & Ottilie Thompson Ltd.
+        © 2026 The Common Room
       </span>
     </nav>
   </footer>

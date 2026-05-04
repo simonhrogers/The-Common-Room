@@ -1,4 +1,6 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { FontaineTransform } from 'fontaine'
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-20',
   
@@ -22,8 +24,8 @@ export default defineNuxtConfig({
   ],
 
   site: {
-    url: 'https://www.bbot.studio',
-    name: 'Bella Bruton & Ottilie Thompson Ltd.',
+    url: 'https://www.thecommonroom.world',
+    name: 'The Common Room',
   },
 
   sitemap: {
@@ -34,7 +36,7 @@ export default defineNuxtConfig({
 
   robots: {
     disallow: ['/account', '/account/*'],
-    sitemap: 'https://www.commission.nyc/sitemap.xml',
+    sitemap: 'https://www.thecommonroom.world/sitemap.xml',
   },
 
   icon: {
@@ -46,8 +48,8 @@ export default defineNuxtConfig({
 
   fonts: {
     defaults: {
-      weights: [400, 500],
-      styles: ['normal', 'italic'],
+      weights: [600],
+      styles: ['normal'],
       subsets: ['latin'],
     },
   },
@@ -59,7 +61,8 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '@/assets/styles/app.scss'
+    '@/assets/styles/app.scss',
+    '@/assets/styles/fontaine.css',
   ],
 
   postcss: {
@@ -90,6 +93,19 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    plugins: [ 
+      // Fontaine a bit off faff, not sure it’s fully needed within my setup
+      // Doesn’t work with widths anyway so will be a jump between condensed.
+      // I am preloading the fonts in app.vue so should be nice and quick anyway
+      FontaineTransform.vite({
+        fallbacks: {
+          Univers: ['Helvetica Neue', 'Arial'],
+          Diatype: ['Helvetica Neue', 'Arial'],
+        },
+        resolvePath: id =>
+          `file://${fileURLToPath(new URL(`./public${id}`, import.meta.url))}`,
+      }),
+    ],
     css: {
       preprocessorOptions: {
         scss: {

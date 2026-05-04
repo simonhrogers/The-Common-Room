@@ -22,7 +22,7 @@ import seo from '@/schemas/objects/seo'
 
 export default defineConfig({
 	name: 'default',
-	title: 'Bella Bruton & Ottilie Thompson Ltd.',
+	title: 'The Common Room',
 	projectId: process.env.SANITY_STUDIO_PROJECT_ID,
 	dataset: process.env.SANITY_STUDIO_DATASET,
 	plugins: [

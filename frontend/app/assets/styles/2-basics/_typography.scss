@@ -1,16 +1,16 @@
 @use "mixins" as *;
 
 #app, html, body {
-  /* -webkit-font-smoothing: antialiased; */
-  font-size: 16px;
-  font-family: "Times New Roman", Times, serif; 
+  font-size: 23px;
   font-weight: normal;
   line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   -webkit-tap-highlight-color: transparent;
-  letter-spacing: var(--letter-spacing);
   @include tablet-up {
-    font-size: 18px;
+    font-size: 3.375vw;
   }
   ::selection {
     background: black;

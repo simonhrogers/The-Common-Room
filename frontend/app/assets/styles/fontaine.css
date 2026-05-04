@@ -1,0 +1,28 @@
+/* Plain CSS so Fontaine’s Vite transform runs (Sass @use partials are not transformed). */
+@font-face {
+  font-family: 'Univers';
+  src: url('/fonts/UniversPro67-BoldCondensed.woff2') format('woff2'),
+    url('/fonts/UniversPro67-BoldCondensed.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Diatype';
+  src: url('/fonts/ABCDiatypeHangul-Bold.woff2') format('woff2'),
+    url('/fonts/ABCDiatypeHangul-Bold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+#app,
+html,
+body {
+  font-family: 'Univers', sans-serif;
+}
+
+.korean {
+  font-family: 'Diatype', sans-serif;
+}

@@ -17,7 +17,7 @@ const config = useRuntimeConfig()
 const gifsStore = useGifsStore()
 const settings = computed(() => sanityStore.settings as any)
 const gifSources = computed(() => settings.value?.gifs || [])
-const siteTitle = computed(() => settings.value?.seo?.seoTitle ?? 'Broken')
+const siteTitle = computed(() => settings.value?.seo?.seoTitle ?? 'The Common Room')
 import imageUrlBuilder from "@sanity/image-url"
 const builder = imageUrlBuilder((useSanity() as any).config as any)
 const seoImageUrl = computed(() =>
@@ -55,6 +55,22 @@ useHead(() => ({
     { name: 'twitter:description', content: settings.value?.seo?.seoDescription ?? '' },
     seoImageUrl.value ? { name: 'twitter:image', content: seoImageUrl.value } : null,
   ].filter(Boolean),
+  link: [
+    {
+      rel: 'preload',
+      href: '/fonts/UniversPro67-BoldCondensed.woff2',
+      as: 'font',
+      type: 'font/woff2',
+      crossorigin: ''
+    },
+    {
+      rel: 'preload',
+      href: '/fonts/ABCDiatypeHangul-Bold.woff2',
+      as: 'font',
+      type: 'font/woff2',
+      crossorigin: ''
+    },
+  ],
 }))
 
 let idleTimeout: number | null = null

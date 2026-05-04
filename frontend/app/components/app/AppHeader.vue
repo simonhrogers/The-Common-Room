@@ -1,17 +1,17 @@
 <template>
-  <header class="bbot-header">
-    <div class="bbot-header-inner">
-      <nav class="bbot-links">
-        <NuxtLink to="/" class="bbot-link">
-          Projects
-        </NuxtLink>
-        <NuxtLink to="/about" class="bbot-link">
-          About
+  <header class="header">
+    <div class="header-inner">
+      <NuxtLink to="/" class="logo">
+        The Common Room <br>
+        <div class="korean">더 커먼룸</div>
+        
+      </NuxtLink>
+      <nav class="links">
+        <NuxtLink to="/info" class="link">
+          Info
         </NuxtLink>
       </nav>
-      <NuxtLink to="/" class="bbot-logo">
-        Bella Bruton &amp; Ottilie Thompson Ltd.
-      </NuxtLink>
+
     </div>
   </header>
 </template>
@@ -20,64 +20,50 @@
 </script>
 
 <style scoped lang="scss">
-.bbot-header {
+.header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 20;
-  padding: calc(1 * var(--lh-rem)) calc(1 * var(--lh-rem));
-  padding-top: 1rem;
+  padding: calc(0.5 * var(--lh-rem)) calc(0.5 * var(--lh-rem));
+  padding-top: calc(0.5 * var(--lh-rem));
   pointer-events: none;
 }
 
-.bbot-header-inner {
+.header-inner {
   pointer-events: auto;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: calc(0.5 * var(--lh-em));
-  @include tablet-up {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-  }
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
 }
 
-.bbot-logo {
+.logo {
   text-decoration: none;
   color: inherit;
-  text-align: center;
-  @include tablet-up {
-    text-align: left;
-  }
 }
 
-.bbot-links {
+.links {
   display: flex;
   align-items: center;
   gap: 1rem;
-  justify-content: center;
-  width: 100%;
-  @include tablet-up {
-    width: auto;
-    justify-content: flex-start;
-  }
+  width: auto;
+  justify-content: flex-start;
 }
 
-.bbot-link {
+.link {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
 }
 
-.bbot-link.router-link-exact-active {
+.link.router-link-exact-active {
   @include underline;
 }
 
-.bbot-link:hover {
+.link:hover {
   // text-decoration: underline;
   @include underline;
 }

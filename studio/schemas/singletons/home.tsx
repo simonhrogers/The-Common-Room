@@ -14,40 +14,56 @@ export default defineType({
       type: 'array',
       of: [
         defineArrayMember({
-          type: 'image',
+          name: 'slideWithImages',
+          title: 'Slide',
+          type: 'object',
           icon: ImageIcon,
           fields: [
             defineField({
-              name: 'alt',
-              title: 'Alt text',
-              type: 'string',
-              description: 'Describe the image for accessibility.',
-            }),
-            defineField({
-              name: 'caption',
-              title: 'Caption',
-              type: 'string',
+              name: 'images',
+              title: 'Images',
+              type: 'array',
+              of: [
+                defineArrayMember({
+                  type: 'image',
+                  icon: ImageIcon,
+                  fields: [
+                    defineField({
+                      name: 'alt',
+                      title: 'Alt text',
+                      type: 'string',
+                      description: 'Describe the image for accessibility.',
+                    }),
+                    defineField({
+                      name: 'caption',
+                      title: 'Caption',
+                      type: 'string',
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      caption: 'caption',
+                      alt: 'alt',
+                      filename: 'asset.originalFilename',
+                      media: 'asset',
+                    },
+                    prepare(selection) {
+                      const caption = (selection?.caption || '').trim()
+                      const alt = (selection?.alt || '').trim()
+                      const filename = (selection?.filename || '').trim()
+        
+                      return {
+                        title: caption || alt || filename || 'Image',
+                        subtitle: caption ? (alt || filename || '') : (alt ? (filename || '') : ''),
+                        media: selection?.media,
+                      }
+                    },
+                  },
+                }),
+              ],
+              validation: (rule) => rule.required().min(1).max(9),
             }),
           ],
-          preview: {
-            select: {
-              caption: 'caption',
-              alt: 'alt',
-              filename: 'asset.originalFilename',
-              media: 'asset',
-            },
-            prepare(selection) {
-              const caption = (selection?.caption || '').trim()
-              const alt = (selection?.alt || '').trim()
-              const filename = (selection?.filename || '').trim()
-
-              return {
-                title: caption || alt || filename || 'Image',
-                subtitle: caption ? (alt || filename || '') : (alt ? (filename || '') : ''),
-                media: selection?.media,
-              }
-            },
-          },
         }),
       ],
     }),

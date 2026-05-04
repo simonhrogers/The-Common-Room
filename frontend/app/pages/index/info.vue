@@ -1,7 +1,7 @@
 <template>
-  <div class="bbot-about-overlay">
-    <div class="bbot-about-center">
-      <main class="bbot-about-scroll">
+  <div class="about-overlay">
+    <div class="about-center">
+      <main class="about-scroll">
         <section
           v-if="data"
           class="information-grid-container"
@@ -57,18 +57,19 @@ const lists = computed(() => data.value?.lists || [])
 </script>
 
 <style lang="scss" scoped>
-.bbot-about-overlay {
+.about-overlay {
   position: fixed;
   inset: 0;
   z-index: 15; /* under header (20), above slideshow */
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(0, 0, 0, 1);
+  // color: black;
   backdrop-filter: blur(0em);
   overflow: hidden;
   display: flex;
   align-items: center;
 }
 
-.bbot-about-center {
+.about-center {
   width: 100%;
   height: 100%;
   display: flex;
@@ -79,7 +80,7 @@ const lists = computed(() => data.value?.lists || [])
   box-sizing: border-box;
 }
 
-.bbot-about-scroll {
+.about-scroll {
   width: 100%;
   max-height: 100%;
   overflow: auto;
@@ -89,7 +90,7 @@ const lists = computed(() => data.value?.lists || [])
   scrollbar-width: none;
 }
 
-.bbot-about-scroll::-webkit-scrollbar {
+.about-scroll::-webkit-scrollbar {
   display: none;
 }
 
