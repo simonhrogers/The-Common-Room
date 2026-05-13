@@ -5,7 +5,6 @@ Document ids which:
 */
 const LOCKED_DOCUMENT_IDS = [
   'home',
-  'about',
   'contact',
   'imprint',
   'privacyPolicy',

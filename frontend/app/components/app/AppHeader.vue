@@ -4,19 +4,33 @@
       <NuxtLink to="/" class="logo">
         The Common Room <br>
         <div class="korean">더 커먼룸</div>
-        
       </NuxtLink>
       <nav class="links">
-        <NuxtLink to="/info" class="link">
+        <template v-if="isInfoPage">
+          <NuxtLink
+            v-for="l in locales"
+            :key="l.code"
+            :to="switchLocalePath(l.code)"
+            class="link"
+          >
+            {{ l.code === 'en' ? 'En' : 'Ko' }}
+          </NuxtLink>
+        </template>
+        <NuxtLink v-else :to="localePath('/info')" class="link">
           Info
         </NuxtLink>
       </nav>
-
     </div>
   </header>
 </template>
 
 <script setup>
+const route = useRoute()
+const { locales } = useI18n()
+const localePath = useLocalePath()
+const switchLocalePath = useSwitchLocalePath()
+
+const isInfoPage = computed(() => route.path === localePath('/info'))
 </script>
 
 <style scoped lang="scss">

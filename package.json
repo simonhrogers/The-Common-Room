@@ -1,6 +1,6 @@
 {
-  "name": "bbot",
-  "description": "BBOT monorepo (Sanity studio + Nuxt frontend)",
+  "name": "the-common-room",
+  "description": "The Common Room monorepo (Sanity studio + Nuxt frontend)",
   "private": true,
   "scripts": {
     "dev": "npm-run-all --parallel dev:*",

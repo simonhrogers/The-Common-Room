@@ -207,6 +207,19 @@ export const pageStructure = (orderedDocumentStructure) => {
             .child(createDocumentNode(item.name, item.name, S));
         }
 
+        if ('type' in item && item.type === 'documentList') {
+          return S.listItem()
+            .title(item.title)
+            .icon(item.icon)
+            .child(
+              S.documentTypeList(item.name)
+                .title(item.title)
+                .child((documentId) =>
+                  createDocumentNode(documentId, item.name, S)
+                )
+            );
+        }
+
         if ('type' in item && item.type === 'divider') {
           return S.divider();
         }

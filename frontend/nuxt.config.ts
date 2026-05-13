@@ -5,11 +5,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-03-20',
   
   routeRules: {
-    '/': { isr: 1800 }, // revalidate every 30 minutes
-    '/about': { isr: 1800 }, // revalidate every 30 minutes
+    '/': { isr: 1800 },
+    '/about': { isr: 1800 },
+    '/ko': { isr: 1800 },
+    '/ko/about': { isr: 1800 },
   },
 
   modules: [
+    '@nuxtjs/i18n',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/nuxt',
@@ -121,6 +124,25 @@ export default defineNuxtConfig({
         'lazysizes/plugins/parent-fit/ls.parent-fit',
       ]
     }
+  },
+
+  i18n: {
+    strategy: 'prefix_except_default',
+    defaultLocale: 'en',
+    locales: [
+      { code: 'en', language: 'en-GB', name: 'English', file: 'en.json' },
+      { code: 'ko', language: 'ko-KR', name: '한국어', file: 'ko.json' },
+    ],
+    restructureDir: 'app',
+    langDir: 'locales',
+    detectBrowserLanguage: false,
+    baseUrl: 'https://www.thecommonroom.world',
+    bundle: {
+      optimizeTranslationDirective: false,
+    },
+    experimental: {
+      typedOptionsAndMessages: 'default',
+    },
   },
 
   sanity: {

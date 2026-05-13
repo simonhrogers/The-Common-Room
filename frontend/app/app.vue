@@ -15,29 +15,48 @@ const sanityStore = useSanityStore()
 const route = useRoute()
 const config = useRuntimeConfig()
 const gifsStore = useGifsStore()
+const { locale } = useI18n()
+const localeHead = useLocaleHead({ seo: true })
 const settings = computed(() => sanityStore.settings as any)
 const gifSources = computed(() => settings.value?.gifs || [])
-const siteTitle = computed(() => settings.value?.seo?.seoTitle ?? 'The Common Room')
+
 import imageUrlBuilder from "@sanity/image-url"
 const builder = imageUrlBuilder((useSanity() as any).config as any)
+
+const getI18nValue = (arr: Array<{ _key: string; value: string }> | string | undefined, lang: string): string => {
+  if (!arr) return ''
+  if (typeof arr === 'string') return arr
+  if (!arr.length) return ''
+  return arr.find(t => t._key === lang)?.value ?? arr.find(t => t._key === 'en')?.value ?? ''
+}
+
+const siteTitle = computed(() =>
+  getI18nValue(settings.value?.seo?.seoTitle, locale.value) || 'The Common Room'
+)
+
+const siteDescription = computed(() =>
+  getI18nValue(settings.value?.seo?.seoDescription, locale.value)
+)
+
 const seoImageUrl = computed(() =>
   settings.value?.seo?.seoImage
     ? builder.image(settings.value.seo.seoImage).width(1200).height(627).fit('crop').url()
     : ''
 )
 
+// Emit hreflang alternates and html lang attribute
+useHead(localeHead)
+
 useHead(() => ({
   titleTemplate: (title) => (title ? `${title} | ${siteTitle.value}` : siteTitle.value),
-  htmlAttrs: { lang: 'en' },
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=5' },
     { key: 'theme-color', name: 'theme-color', content: '#FFFFFF' },
-    { property: 'og:locale', content: 'en' },
     { property: 'og:title', content: siteTitle.value },
     { property: 'og:site_name', content: siteTitle.value },
     { property: 'og:url', content: `${config.public.BASE_URL}${route.fullPath}` },
-    { name: 'description', content: settings.value?.seo?.seoDescription ?? '' },
-    { property: 'og:description', content: settings.value?.seo?.seoDescription ?? '' },
+    { name: 'description', content: siteDescription.value },
+    { property: 'og:description', content: siteDescription.value },
     settings.value?.seo?.metaKeywords?.length
       ? { name: 'keywords', content: settings.value.seo.metaKeywords.join(',') }
       : null,
@@ -52,7 +71,7 @@ useHead(() => ({
     { property: 'og:image:type', content: settings.value?.seo?.seoImage?.asset?.mimeType ?? '' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: siteTitle.value },
-    { name: 'twitter:description', content: settings.value?.seo?.seoDescription ?? '' },
+    { name: 'twitter:description', content: siteDescription.value },
     seoImageUrl.value ? { name: 'twitter:image', content: seoImageUrl.value } : null,
   ].filter(Boolean),
   link: [

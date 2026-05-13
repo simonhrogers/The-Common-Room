@@ -1,8 +1,10 @@
-import { defineConfig, isDev } from 'sanity'
+import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { colorInput } from '@sanity/color-input'
 import { visionTool } from '@sanity/vision'
 import { media } from 'sanity-plugin-media'
+import { documentInternationalization } from '@sanity/document-internationalization'
+import { internationalizedArray } from 'sanity-plugin-internationalized-array'
 // import { muxInput } from 'sanity-plugin-mux-input'
 import { defaultDocumentNode } from './config/views'
 import { resolveProductionUrl } from './config/views'
@@ -19,6 +21,11 @@ import settings from '@/schemas/singletons/settings'
 import blockContent from '@/schemas/objects/blockContent'
 import blockContentSimple from '@/schemas/objects/blockContentSimple'
 import seo from '@/schemas/objects/seo'
+
+const I18N_LANGUAGES = [
+  { id: 'en', title: 'English' },
+  { id: 'ko', title: '한국어' },
+]
 
 export default defineConfig({
 	name: 'default',
@@ -37,7 +44,16 @@ export default defineConfig({
       ),
       defaultDocumentNode,
     }),
-    singletonPlugin([home.name, about.name, settings.name, 'media.tag']),
+    singletonPlugin([home.name, settings.name, 'media.tag']),
+    internationalizedArray({
+      languages: I18N_LANGUAGES,
+      defaultLanguages: ['en'],
+      fieldTypes: ['string', 'text'],
+    }),
+    documentInternationalization({
+      supportedLanguages: I18N_LANGUAGES,
+      schemaTypes: ['about'],
+    }),
     colorInput(),
 		// muxInput({ mp4_support: 'standard' }),
 		media(),
@@ -65,4 +81,3 @@ export default defineConfig({
 			}),
 	},
 })
-

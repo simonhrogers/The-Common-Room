@@ -16,6 +16,7 @@
 	],
 	"dependencies": {
 		"@sanity/color-input": "^6.0.4",
+		"@sanity/document-internationalization": "^6.1.1",
 		"@sanity/vision": "^5.17.1",
 		"a11y-react-emoji": "^1.2.0",
 		"react": "^19.2.0",
@@ -24,14 +25,15 @@
 		"react-is": "^19.2.0",
 		"sanity": "5.17.1",
 		"sanity-plugin-iframe-pane": "^5.0.10",
+		"sanity-plugin-internationalized-array": "^5.1.1",
+		"sanity-plugin-media": "^4.1.1",
 		"sanity-plugin-mux-input": "^2.17.0",
-    "sanity-plugin-media": "^4.1.1",
-    "styled-components": "^6.1.19"
+		"styled-components": "^6.1.19"
 	},
 	"devDependencies": {
 		"@sanity/eslint-config-studio": "^5.0.2",
 		"@sanity/types": "4.0.1",
-    "@types/react": "^19.2.14",
+		"@types/react": "^19.2.14",
 		"eslint": "^9.31.0",
 		"typescript": "^5.8.3"
 	}

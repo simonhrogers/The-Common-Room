@@ -33,6 +33,7 @@
     "@iconify-json/ph": "^1.2.2",
     "@nuxt/eslint": "^1.12.1",
     "@nuxthub/core": "0.10.4",
+    "@nuxtjs/i18n": "^10.3.0",
     "eslint": "^9.39.2",
     "fontaine": "^0.8.0",
     "nuxt": "^4.4.2",

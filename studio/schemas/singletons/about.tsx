@@ -1,5 +1,5 @@
 import { AboutIcon } from "../../components/Icons"
-import { defineArrayMember, defineField, defineType } from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 export default defineType({
   name: 'about',
@@ -17,7 +17,6 @@ export default defineType({
       title: 'Contact email',
       type: 'string',
     }),
-    // address
     defineField({
       name: 'address',
       title: 'Address',
@@ -27,8 +26,8 @@ export default defineType({
   preview: {
     prepare() {
       return {
-        title: 'About'
+        title: 'About',
       }
     }
   }
-}) 
+})

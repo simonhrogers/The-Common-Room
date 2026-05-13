@@ -89,7 +89,7 @@ export const resolveProductionUrl = async ({ doc, context, frontendUrl }) => {
         url.pathname = `/projects/${slug}`
         break
       case 'about':
-        url.pathname = `/about`
+        url.pathname = doc.language === 'ko' ? `/ko/about` : `/about`
         break
       case 'contact':
         url.pathname = `/contact`
