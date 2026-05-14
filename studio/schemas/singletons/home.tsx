@@ -63,6 +63,9 @@ export default defineType({
                       type: 'string',
                     }),
                   ],
+                  options: {
+                    hotspot: true,
+                  },
                   preview: {
                     select: {
                       caption: 'caption',
