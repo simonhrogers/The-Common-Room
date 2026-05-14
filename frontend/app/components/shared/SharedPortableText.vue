@@ -51,6 +51,7 @@ const { value } = toRefs(props)
 .portable-text {
   width: fit-content;
   white-space: pre-line;
+  // @include text-width;
   &.stealth-links {
     a {
       color: inherit;
@@ -90,19 +91,17 @@ const { value } = toRefs(props)
   figure, table, hr, .portable-text-sanity-image-wrapper {
     // margin-left: auto;
     // margin-right: auto;
-    // @include text-width-rem;
+    @include text-width;
   }
   h4, h5, h6 {
     margin-top: calc(2 * var(--lh-em));
     margin-bottom: var(--lh-em);
-    // font-weight: bold;
-    // @include uppercase;
     &:first-child {
       margin-top: 0;
     }
   }
   h4 {
-    font-size: 1.5em;
+    font-size: 1em;
     text-wrap: balance;
   }
   p, ul, ol {

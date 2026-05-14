@@ -18,6 +18,29 @@ export default defineType({
           title: 'Slide',
           type: 'object',
           icon: ImageIcon,
+          preview: {
+            select: {
+              firstImage: 'images.0',
+              originalFilename: 'images.0.asset.originalFilename',
+              images: 'images',
+            },
+            prepare({ firstImage, originalFilename, images }) {
+              const count = Array.isArray(images) ? images.length : 0
+              const name =
+                typeof originalFilename === 'string' && originalFilename.trim()
+                  ? originalFilename.trim()
+                  : 'Slide'
+
+              return {
+                title: name,
+                subtitle:
+                  count === 0
+                    ? 'No images'
+                    : `${count} image${count === 1 ? '' : 's'}`,
+                media: firstImage,
+              }
+            },
+          },
           fields: [
             defineField({
               name: 'images',

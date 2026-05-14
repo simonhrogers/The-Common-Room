@@ -1,22 +1,48 @@
 <template>
-  <header class="header">
-    <div class="header-inner">
-      <NuxtLink to="/" class="logo">
-        The Common Room <br>
-        <div class="korean">더 커먼룸</div>
-      </NuxtLink>
+  <header
+    class="header"
+    :class="{
+      'header--info': isInfoPage,
+      'header--info-ko': isInfoPage && localeIsKo,
+    }"
+  >
+    <!-- Info: locale stays fixed; home keeps single fixed bar -->
+    <div
+      v-if="isInfoPage"
+      class="header-locale-fixed"
+      aria-label="Language"
+    >
       <nav class="links">
-        <template v-if="isInfoPage">
-          <NuxtLink
-            v-for="l in locales"
-            :key="l.code"
-            :to="switchLocalePath(l.code)"
-            class="link"
-          >
-            {{ l.code === 'en' ? 'En' : 'Ko' }}
-          </NuxtLink>
-        </template>
-        <NuxtLink v-else :to="localePath('/info')" class="link">
+        <NuxtLink
+          v-for="l in locales"
+          :key="l.code"
+          :to="switchLocalePath(l.code)"
+          class="link"
+          :class="{ 'link--locale-active': l.code === locale }"
+        >
+          {{ l.code === 'en' ? 'En' : 'Ko' }}
+        </NuxtLink>
+      </nav>
+    </div>
+
+    <div class="header-inner">
+      <NuxtLink
+        :to="localePath('/')"
+        class="logo"
+      >
+        The Common Room <br>
+        <div class="korean">
+          더 커먼룸
+        </div>
+      </NuxtLink>
+      <nav
+        v-if="!isInfoPage"
+        class="links"
+      >
+        <NuxtLink
+          :to="localePath('/info')"
+          class="link"
+        >
           Info
         </NuxtLink>
       </nav>
@@ -26,11 +52,29 @@
 
 <script setup>
 const route = useRoute()
-const { locales } = useI18n()
+const { locales, defaultLocale, locale } = useI18n()
+const localeIsKo = computed(() => locale.value === 'ko')
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 
-const isInfoPage = computed(() => route.path === localePath('/info'))
+/**
+ * Path-based so it stays true during i18n locale navigations.
+ * `route.path === localePath('/info')` can briefly be false while locale updates, which flashes "Info".
+ */
+function pathIsInfo(path, defaultLocale, localeCodes) {
+  const p = path.replace(/\/+$/, '') || '/'
+  if (p === '/info') return true
+  for (const l of localeCodes) {
+    const code = l.code
+    if (!code || code === defaultLocale) continue
+    if (p === `/${code}/info`) return true
+  }
+  return false
+}
+
+const isInfoPage = computed(() =>
+  pathIsInfo(route.path, defaultLocale.value, locales.value),
+)
 </script>
 
 <style scoped lang="scss">
@@ -40,8 +84,12 @@ const isInfoPage = computed(() => route.path === localePath('/info'))
   left: 0;
   right: 0;
   z-index: 20;
-  padding: calc(0.5 * var(--lh-rem)) calc(0.5 * var(--lh-rem));
-  padding-top: calc(0.5 * var(--lh-rem));
+  pointer-events: none;
+}
+
+.header--info {
+  position: static;
+  padding: 0;
   pointer-events: none;
 }
 
@@ -52,6 +100,22 @@ const isInfoPage = computed(() => route.path === localePath('/info'))
   justify-content: space-between;
   align-items: baseline;
   gap: 0.5rem;
+  padding: calc(0.5 * var(--lh-rem)) calc(0.5 * var(--lh-rem));
+  padding-bottom: 0;
+}
+
+.header--info .header-inner {
+  justify-content: flex-start;
+}
+
+.header-locale-fixed {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 21;
+  padding: calc(0.5 * var(--lh-rem)) calc(0.5 * var(--lh-rem));
+  padding-top: calc(0.5 * var(--lh-rem));
+  pointer-events: auto;
 }
 
 .logo {
@@ -62,7 +126,7 @@ const isInfoPage = computed(() => route.path === localePath('/info'))
 .links {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: calc(0.5 * var(--lh-rem));
   width: auto;
   justify-content: flex-start;
 }
@@ -73,12 +137,41 @@ const isInfoPage = computed(() => route.path === localePath('/info'))
   cursor: pointer;
 }
 
-.link.router-link-exact-active {
-  @include underline;
+/* Locale (En / Ko): active full strength; inactive 50%; inactive → full on hover */
+.header-locale-fixed .link {
+  opacity: 0.5;
+
+  &.link--locale-active,
+  &:hover {
+    opacity: 1;
+  }
 }
 
-.link:hover {
-  // text-decoration: underline;
-  @include underline;
+/* Logo + Info: dim on hover unless that link is the current page */
+.header-inner > .logo:hover {
+  opacity: 0.5;
 }
+
+.header-inner > .logo.router-link-exact-active:hover {
+  opacity: 1;
+}
+
+.header-inner .links .link:hover {
+  opacity: 0.5;
+}
+
+.header-inner .links .link.router-link-exact-active:hover {
+  opacity: 1;
+}
+
+/* Korean info: match white surface + black type (header sits outside NuxtLayout) */
+// .header--info-ko {
+//   background-color: #fff;
+//   color: #000;
+// }
+
+// .header--info-ko *::selection {
+//   background: red;
+//   color: black;
+// }
 </style>

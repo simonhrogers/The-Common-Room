@@ -18,7 +18,7 @@ export const headerMenuSanityQuery = `{
     title,
     "slug": slug.current
   },
-  "about": *[_type == "about"] | order(_updatedAt desc) [0] {
+  "about": *[_id == "information"] [0] {
     "sections": sections[] {
       "_key": _key,
       title
@@ -51,7 +51,7 @@ export const siteQuery = groq`{
         title,
         "slug": slug.current,
       },
-      "about": *[_type == "about"].sections[] {
+      "about": *[_id == "information"][0].sections[] {
         "_id": _key,
         title,
         "slug": _key,

@@ -10,25 +10,6 @@ export default defineType({
   // liveEdit: true,
   fields: [
     defineField({
-      name: 'gifs',
-      title: 'GIFs',
-      description: 'GIF images used for the on-site Easter egg overlay.',
-      type: 'array',
-      of: [
-        defineArrayMember({
-          type: 'image',
-          options: { hotspot: false, accept: 'image/gif' },
-          fields: [
-            defineField({
-              name: 'alt',
-              title: 'Alt text',
-              type: 'string',
-            }),
-          ],
-        }),
-      ],
-    }),
-    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'object',

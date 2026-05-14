@@ -1,4 +1,7 @@
 {
+  "info": {
+    "backToTop": "Back to top"
+  },
   "languageSwitcher": {
     "label": "Language",
     "en": "English",

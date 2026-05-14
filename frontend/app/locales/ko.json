@@ -1,4 +1,7 @@
 {
+  "info": {
+    "backToTop": "맨 위로"
+  },
   "languageSwitcher": {
     "label": "언어",
     "en": "영어",

@@ -21,26 +21,46 @@
             v-for="(slide, i) in slides"
             :key="slide.id || i"
             class="slide-item"
-            :class="{ 
-              'one-image': slide.images?.length === 1,
-              'two-images': slide.images?.length > 1 && slide.images?.length < 4,
-              'four-images': slide.images?.length > 3 && slide.images?.length < 9,
-              'nine-images': slide.images?.length === 9,
-            }"
+            :class="slideLayoutClass(slide)"
           >
             <SharedSanityImage
-              v-for="image in slide.images"
+              v-for="(image, ii) in slide.images"
               :key="image.id"
               :image="image"
               :alt="image.alt || ''"
-              imageWrapperClasses="cover"
               class="slide-img"
-              :lazy-preload="i === 0"
+              :sizes="slideImageSizes(slide.images?.length ?? 0)"
+              :loading="i === 0 ? 'eager' : 'lazy'"
+              :fetch-priority="i === 0 && ii === 0 ? 'high' : 'low'"
             />
           </div>
         </div>
       </div>
     </section>
+
+    <!-- Off-viewport clones so lazy-loaded srcsets start fetching for other slides -->
+    <div
+      class="slide-preloads"
+      aria-hidden="true"
+    >
+      <div
+        v-for="(slide, si) in slides"
+        :key="'preload-' + (slide.id ?? si)"
+        class="slide-item slide-preloads__item"
+        :class="slideLayoutClass(slide)"
+      >
+        <SharedSanityImage
+          v-for="image in slide.images"
+          :key="'preload-' + (slide.id ?? si) + '-' + image.id"
+          :image="image"
+          alt=""
+          class="slide-img"
+          :sizes="slideImageSizes(slide.images?.length ?? 0)"
+          loading="lazy"
+          fetch-priority="low"
+        />
+      </div>
+    </div>
 
     <!-- Child page overlay (e.g. /about) -->
     <NuxtPage />
@@ -69,12 +89,63 @@ const homeQuery = groq`*[_id == "home"][0]{
 
 const data = await useSanityData({ query: homeQuery })
 
+const HOME_SLIDE_INDEX_KEY = 'tcr:homeSlideIndex'
+
 const slides = computed(() => data.value?.slideshow || [])
+
+/** `sizes` for srcset — matches slide grid CSS (incl. portrait stack for 2–3 images). */
+function slideImageSizes(imageCount) {
+  const n = Number(imageCount) || 0
+  if (n <= 0) return '100vw'
+  if (n === 1) return '100vw'
+  if (n < 4) return '(aspect-ratio < 1) 100vw, 50vw'
+  if (n < 9) return '50vw'
+  if (n === 9) return '33vw'
+  return '100vw'
+}
+
+function slideLayoutClass(slide) {
+  const n = slide?.images?.length ?? 0
+  return {
+    'one-image': n === 1,
+    'two-images': n > 1 && n < 4,
+    'four-images': n > 3 && n < 9,
+    'nine-images': n === 9,
+  }
+}
+
+function readStoredSlideIndex(length) {
+  if (!import.meta.client || length <= 0) return 0
+  const raw = sessionStorage.getItem(HOME_SLIDE_INDEX_KEY)
+  if (raw == null) return 0
+  const parsed = Number.parseInt(raw, 10)
+  if (!Number.isFinite(parsed)) return 0
+  return Math.max(0, Math.min(parsed, length - 1))
+}
+
 const currentSlideIndex = ref(0)
 
 watchEffect(() => {
-  if (slides.value.length === 0) currentSlideIndex.value = 0
-  if (currentSlideIndex.value >= slides.value.length) currentSlideIndex.value = 0
+  const n = slides.value.length
+  if (n === 0) {
+    currentSlideIndex.value = 0
+    return
+  }
+  if (currentSlideIndex.value >= n) {
+    currentSlideIndex.value = n - 1
+  }
+})
+
+onMounted(() => {
+  const n = slides.value.length
+  if (!n) return
+  currentSlideIndex.value = readStoredSlideIndex(n)
+})
+
+watch(currentSlideIndex, (i) => {
+  if (!import.meta.client) return
+  if (!slides.value.length) return
+  sessionStorage.setItem(HOME_SLIDE_INDEX_KEY, String(i))
 })
 
 const currentSlide = computed(() => slides.value[currentSlideIndex.value] || null)
@@ -197,36 +268,76 @@ const handleKeydown = (event) => {
   flex-direction: row;
   flex-wrap: nowrap;
   height: 100%;
-  // transition: transform 0.35s ease;
-  will-change: transform;
 }
 
 .slide-item {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Fill slide / grid cells: override intrinsic aspect-ratio from Sanity so object-fit can cover the cell */
+.slide-item :deep(img.slide-img) {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0;
+  min-height: 0;
+  object-fit: cover !important;
+  aspect-ratio: unset !important;
 }
 
 .one-image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-content: stretch;
+  align-content: stretch;
 }
 
 .two-images {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
+
+  /* Portrait (narrower than square): stack vertically */
+  @media (aspect-ratio < 1) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .four-images {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 
 .nine-images {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+/* Hidden duplicate slides: sit just below the viewport so lazy images still enter range */
+.slide-preloads {
+  position: fixed;
+  left: 0;
+  top: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.slide-preloads__item {
+  flex: 0 0 100vh;
+  width: 100vw;
+  min-height: 0;
+  box-sizing: border-box;
 }
 </style>

@@ -30,12 +30,12 @@
 @mixin text-width {
   width: 100%;
   @include tablet-up {
-    max-width: 36rem;
+    max-width: 20rem;
   }
   @include laptop-up {
-    max-width: 36rem;
+    max-width: 20rem;
   }
   @include desktop-up {
-    max-width: 36rem;
+    max-width: 20rem;
   }
 }

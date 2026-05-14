@@ -6,7 +6,7 @@ list of schema types supporting preview
 export const previewSchemaTypes = [
   'home',
   'project',
-  'about',
+  'information',
   'contact',
   'privacyPolicy',
   'imprint',
@@ -88,8 +88,8 @@ export const resolveProductionUrl = async ({ doc, context, frontendUrl }) => {
       case 'project':
         url.pathname = `/projects/${slug}`
         break
-      case 'about':
-        url.pathname = doc.language === 'ko' ? `/ko/about` : `/about`
+      case 'information':
+        url.pathname = `/info`
         break
       case 'contact':
         url.pathname = `/contact`

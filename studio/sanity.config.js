@@ -13,7 +13,7 @@ import { pageStructure } from './config/pageStructure'
 import { singletonPlugin } from './config/singleton'
 
 // Singletons
-import about from '@/schemas/singletons/about'
+import information from '@/schemas/singletons/information'
 import home from '@/schemas/singletons/home'
 import settings from '@/schemas/singletons/settings'
 
@@ -37,23 +37,23 @@ export default defineConfig({
       structure: pageStructure(
         [
           { ...home, type: 'singleton' },
-          { ...about, type: 'singleton' },
+          { ...information, type: 'singleton' },
           { type: 'divider' },
           { ...settings, type: 'singleton' },
         ]
       ),
       defaultDocumentNode,
     }),
-    singletonPlugin([home.name, settings.name, 'media.tag']),
+    singletonPlugin([home.name, information.name, settings.name, 'media.tag']),
     internationalizedArray({
       languages: I18N_LANGUAGES,
       defaultLanguages: ['en'],
       fieldTypes: ['string', 'text'],
     }),
-    documentInternationalization({
-      supportedLanguages: I18N_LANGUAGES,
-      schemaTypes: ['about'],
-    }),
+    // documentInternationalization({
+    //   supportedLanguages: I18N_LANGUAGES,
+    //   schemaTypes: [],
+    // }),
     colorInput(),
 		// muxInput({ mp4_support: 'standard' }),
 		media(),
@@ -64,7 +64,7 @@ export default defineConfig({
 		types: [
       // Singletons
       home,
-      about,
+      information,
       settings,
       blockContent,
       blockContentSimple,
