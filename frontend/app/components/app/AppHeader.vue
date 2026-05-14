@@ -120,6 +120,35 @@ const isHomePage = computed(() =>
     0 0 14px rgba(0, 0, 0, 0.05);
 }
 
+/* Homepage: ultra-soft vignette wash behind the title row (diffuse, barely there) */
+.header--home .header-inner {
+  position: relative;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    /* Oversized box so blurred edges never clip */
+    top: -60%;
+    left: -25%;
+    right: -25%;
+    bottom: -140%;
+    transform: translateZ(0);
+    background: radial-gradient(
+      ellipse 130% 85% at 50% 0%,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 38%,
+      rgba(0, 0, 0, 0.012) 62%,
+      rgba(0, 0, 0, 0.022) 82%,
+      rgba(0, 0, 0, 0.03) 100%
+    );
+    filter: blur(32px);
+    opacity: 0.9;
+  }
+}
+
 .header-inner {
   pointer-events: auto;
   display: flex;
