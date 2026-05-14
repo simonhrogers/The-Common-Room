@@ -15,7 +15,7 @@ const sanityStore = useSanityStore()
 const route = useRoute()
 const config = useRuntimeConfig()
 const gifsStore = useGifsStore()
-const { locale } = useI18n()
+const { locale, defaultLocale } = useI18n()
 const localeHead = useLocaleHead({ seo: true })
 const settings = computed(() => sanityStore.settings as any)
 const gifSources = computed(() => settings.value?.gifs || [])
@@ -23,11 +23,25 @@ const gifSources = computed(() => settings.value?.gifs || [])
 import imageUrlBuilder from "@sanity/image-url"
 const builder = imageUrlBuilder((useSanity() as any).config as any)
 
-const getI18nValue = (arr: Array<{ _key: string; value: string }> | string | undefined, lang: string): string => {
+/** Matches `sanity-plugin-internationalized-array` rows (`language`) and legacy `_key`. */
+const getI18nValue = (
+  arr: Array<{ _key?: string; language?: string; value?: string }> | string | undefined,
+  lang: string,
+): string => {
   if (!arr) return ''
   if (typeof arr === 'string') return arr
-  if (!arr.length) return ''
-  return arr.find(t => t._key === lang)?.value ?? arr.find(t => t._key === 'en')?.value ?? ''
+  if (!Array.isArray(arr) || !arr.length) return ''
+  const code = (lang || defaultLocale.value || 'en').toString()
+  const def = (defaultLocale.value || 'en').toString()
+  const matches = (row: { _key?: string; language?: string; value?: string }, c: string) =>
+    row && (row.language === c || row._key === c)
+  return (
+    arr.find((t) => matches(t, code))?.value
+    ?? arr.find((t) => matches(t, def))?.value
+    ?? arr.find((t) => matches(t, 'en'))?.value
+    ?? arr[0]?.value
+    ?? ''
+  )
 }
 
 const siteTitle = computed(() =>

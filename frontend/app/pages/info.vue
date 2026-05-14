@@ -162,7 +162,7 @@ useHead({
   flex-shrink: 0;
   margin: 0;
   margin-top: calc(2 * var(--lh-em));
-  text-align: center;
+  text-align: left;
 
   @include tablet-up {
     position: absolute;

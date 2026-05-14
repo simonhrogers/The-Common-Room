@@ -2,6 +2,7 @@
   <header
     class="header"
     :class="{
+      'header--home': isHomePage,
       'header--info': isInfoPage,
       'header--info-ko': isInfoPage && localeIsKo,
     }"
@@ -75,6 +76,22 @@ function pathIsInfo(path, defaultLocale, localeCodes) {
 const isInfoPage = computed(() =>
   pathIsInfo(route.path, defaultLocale.value, locales.value),
 )
+
+/** Index route only (default + prefixed locales), for header treatment over the slideshow. */
+function pathIsHome(path, defaultLocale, localeCodes) {
+  const p = path.replace(/\/+$/, '') || '/'
+  if (p === '/') return true
+  for (const l of localeCodes) {
+    const code = l.code
+    if (!code || code === defaultLocale) continue
+    if (p === `/${code}`) return true
+  }
+  return false
+}
+
+const isHomePage = computed(() =>
+  pathIsHome(route.path, defaultLocale.value, locales.value)
+)
 </script>
 
 <style scoped lang="scss">
@@ -91,6 +108,16 @@ const isInfoPage = computed(() =>
   position: static;
   padding: 0;
   pointer-events: none;
+}
+
+/* Homepage only: faint halos so type stays legible over bright / white image areas */
+.header--home .logo,
+.header--home .header-inner .links .link {
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.55),
+    0 0.5px 0 rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 0 14px rgba(0, 0, 0, 0.05);
 }
 
 .header-inner {

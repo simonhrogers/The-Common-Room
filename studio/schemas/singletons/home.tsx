@@ -2,6 +2,13 @@ import { HomeIcon } from "../../components/Icons"
 import { ImageIcon } from "@sanity/icons"
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+/** Preview `select` returns arrays as plain objects with numeric keys in Studio v3+ */
+function previewListLength(value: unknown): number {
+  if (Array.isArray(value)) return value.length
+  if (value && typeof value === 'object') return Object.keys(value as object).length
+  return 0
+}
+
 export default defineType({
   name: 'home',
   title: 'Home',
@@ -25,7 +32,7 @@ export default defineType({
               images: 'images',
             },
             prepare({ firstImage, originalFilename, images }) {
-              const count = Array.isArray(images) ? images.length : 0
+              const count = previewListLength(images)
               const name =
                 typeof originalFilename === 'string' && originalFilename.trim()
                   ? originalFilename.trim()

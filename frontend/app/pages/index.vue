@@ -1,27 +1,31 @@
 <template>
   <main class="home">
     <section
-      v-if="slides.length > 0 && currentSlide"
+      v-if="slides.length > 0"
       class="slideshow"
       tabindex="0"
       role="region"
-      aria-label="Homepage slideshow test (translateX)"
+      aria-label="Homepage slideshow"
       @click="handleSlideClick"
       @keydown="handleKeydown"
       @touchstart.passive="onTouchStart"
       @touchend="onTouchEnd"
       @touchcancel="onTouchEnd"
     >
-      <div class="slide-viewport">
-        <div
-          class="slide-track"
-          :style="trackStyle"
-        >
+      <div
+        ref="slideViewportRef"
+        class="slide-viewport"
+      >
+        <div class="slide-stack">
           <div
             v-for="(slide, i) in slides"
             :key="slide.id || i"
-            class="slide-item"
-            :class="slideLayoutClass(slide)"
+            class="slide-item slide-stack__item"
+            :data-slide-index="i"
+            :class="[
+              slideLayoutClass(slide),
+              { 'slide-stack__item--active': i === currentSlideIndex },
+            ]"
           >
             <SharedSanityImage
               v-for="(image, ii) in slide.images"
@@ -30,37 +34,13 @@
               :alt="image.alt || ''"
               class="slide-img"
               :sizes="slideImageSizes(slide.images?.length ?? 0)"
-              :loading="i === 0 ? 'eager' : 'lazy'"
+              loading="eager"
               :fetch-priority="i === 0 && ii === 0 ? 'high' : 'low'"
             />
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Off-viewport clones so lazy-loaded srcsets start fetching for other slides -->
-    <div
-      class="slide-preloads"
-      aria-hidden="true"
-    >
-      <div
-        v-for="(slide, si) in slides"
-        :key="'preload-' + (slide.id ?? si)"
-        class="slide-item slide-preloads__item"
-        :class="slideLayoutClass(slide)"
-      >
-        <SharedSanityImage
-          v-for="image in slide.images"
-          :key="'preload-' + (slide.id ?? si) + '-' + image.id"
-          :image="image"
-          alt=""
-          class="slide-img"
-          :sizes="slideImageSizes(slide.images?.length ?? 0)"
-          loading="lazy"
-          fetch-priority="low"
-        />
-      </div>
-    </div>
 
     <!-- Child page overlay (e.g. /about) -->
     <NuxtPage />
@@ -136,10 +116,15 @@ watchEffect(() => {
   }
 })
 
-onMounted(() => {
+onBeforeMount(() => {
+  if (!import.meta.client) return
   const n = slides.value.length
-  if (!n) return
-  currentSlideIndex.value = readStoredSlideIndex(n)
+  if (n) currentSlideIndex.value = readStoredSlideIndex(n)
+})
+
+onMounted(async () => {
+  if (!slides.value.length) return
+  await settleSlideLayerImages(currentSlideIndex.value)
 })
 
 watch(currentSlideIndex, (i) => {
@@ -148,37 +133,66 @@ watch(currentSlideIndex, (i) => {
   sessionStorage.setItem(HOME_SLIDE_INDEX_KEY, String(i))
 })
 
-const currentSlide = computed(() => slides.value[currentSlideIndex.value] || null)
+const slideViewportRef = ref(null)
+const slideNavLock = ref(false)
 
-const len = computed(() => slides.value.length)
-
-/** Track is n × viewport wide; translateX % is relative to track, so −(index/n)×100% = one slide width per step. */
-const trackTransform = computed(() => {
-  const n = len.value
-  if (!n) return 'translateX(0)'
-  const pct = -(currentSlideIndex.value / n) * 100
-  return `translateX(${pct}%)`
-})
-
-const slideBasisPercent = computed(() => {
-  const n = len.value
-  if (!n) return 100
-  return 100 / n
-})
-
-const trackStyle = computed(() => ({
-  width: `${len.value * 100}%`,
-  transform: trackTransform.value,
-}))
-
-const nextSlide = () => {
-  if (!slides.value.length) return
-  currentSlideIndex.value = (currentSlideIndex.value + 1) % slides.value.length
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    }),
+  ])
 }
 
-const previousSlide = () => {
+/** Wait until slide layer images have pixels (and decode when supported) to avoid blank swap. */
+async function settleSlideLayerImages(index) {
+  if (!import.meta.client) return
+  await nextTick()
+  const root = slideViewportRef.value
+  if (!root) return
+  const layer = root.querySelector(`[data-slide-index="${index}"]`)
+  if (!layer) return
+  const imgs = [...layer.querySelectorAll('img.slide-img')]
+  if (!imgs.length) return
+
+  const one = (img) => {
+    if (img.complete && img.naturalWidth > 0) {
+      return (img.decode?.() ?? Promise.resolve()).catch(() => {})
+    }
+    return new Promise((resolve) => {
+      const done = () => {
+        ;(img.decode?.() ?? Promise.resolve()).catch(() => {}).finally(resolve)
+      }
+      img.addEventListener('load', done, { once: true })
+      img.addEventListener('error', resolve, { once: true })
+    })
+  }
+
+  await withTimeout(Promise.all(imgs.map(one)), 10_000)
+}
+
+async function goToSlideIndex(next) {
   if (!slides.value.length) return
-  currentSlideIndex.value = (currentSlideIndex.value - 1 + slides.value.length) % slides.value.length
+  const n = slides.value.length
+  const i = ((next % n) + n) % n
+  if (i === currentSlideIndex.value) return
+  if (slideNavLock.value) return
+  slideNavLock.value = true
+  try {
+    await settleSlideLayerImages(i)
+    currentSlideIndex.value = i
+  } finally {
+    slideNavLock.value = false
+  }
+}
+
+function nextSlide() {
+  void goToSlideIndex(currentSlideIndex.value + 1)
+}
+
+function previousSlide() {
+  void goToSlideIndex(currentSlideIndex.value - 1)
 }
 
 let touchStartX = null
@@ -257,17 +271,31 @@ const handleKeydown = (event) => {
 }
 
 .slide-viewport {
+  position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-.slide-track {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+.slide-stack {
+  position: relative;
+  width: 100%;
   height: 100%;
+}
+
+.slide-stack__item {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.slide-stack__item--active {
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .slide-item {
@@ -319,25 +347,5 @@ const handleKeydown = (event) => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(3, minmax(0, 1fr));
-}
-
-/* Hidden duplicate slides: sit just below the viewport so lazy images still enter range */
-.slide-preloads {
-  position: fixed;
-  left: 0;
-  top: 100vh;
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  opacity: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.slide-preloads__item {
-  flex: 0 0 100vh;
-  width: 100vw;
-  min-height: 0;
-  box-sizing: border-box;
 }
 </style>

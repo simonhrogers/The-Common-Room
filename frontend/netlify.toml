@@ -1,0 +1,27 @@
+# thecommonroomprod.com domains are Netlify domain aliases on this site.
+# Send all traffic to the primary custom domain (see nuxt `site.url`).
+# https://docs.netlify.com/manage/routing/redirects/redirect-options/#domain-level-redirects
+
+[[redirects]]
+  from = "http://thecommonroomprod.com/*"
+  to = "https://www.thecommonroom.world/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://thecommonroomprod.com/*"
+  to = "https://www.thecommonroom.world/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.thecommonroomprod.com/*"
+  to = "https://www.thecommonroom.world/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.thecommonroomprod.com/*"
+  to = "https://www.thecommonroom.world/:splat"
+  status = 301
+  force = true
