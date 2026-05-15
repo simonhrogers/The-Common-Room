@@ -48,10 +48,20 @@
 <script setup>
 const mainStore = useMainStore()
 const { locale, locales, defaultLocale } = useI18n()
-const { isInfoPage, isHomePage } = useSiteRoute()
 const homeUiTextColor = computed(() => mainStore.homeUiTextColor)
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
+
+const props = defineProps({
+  isInfoPage: {
+    type: Boolean,
+    default: false,
+  },
+  isHomePage: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 </script>
 

@@ -3,6 +3,10 @@
     class="home"
     :class="{ 'home--ui-black': homeUiTextColor === 'black' }"
   >
+    <AppHeader 
+      :isInfoPage="false"
+      :isHomePage="true"
+    />
     <section
       v-if="slides.length > 0"
       class="slideshow"
@@ -82,6 +86,14 @@ const mainStore = useMainStore()
 usePageHead({
   title: '',
   seo: computed(() => sanityStore.settings?.seo),
+})
+
+useHead({
+  bodyAttrs: {
+    class: {
+      'overflow-hidden': true,
+    },
+  },
 })
 
 const homeSlideCount = computed(() => mainStore.homeSlideCount)
@@ -302,6 +314,7 @@ const handleKeydown = (event) => {
   right: 0;
   left: 0;
   bottom: 0;
+  z-index: 100;
 }
 
 .slideshow {

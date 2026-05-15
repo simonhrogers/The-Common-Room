@@ -1,11 +1,8 @@
 <template>
-  <div class="app-shell">
-    <div
-      class="app-header-wrap"
-      :class="{ 'app-header-wrap--info': isInfoPage }"
-    >
-      <AppHeader />
-    </div>
+  <div class="app-container">
+    <AppHeader 
+      :isInfoPage="true"
+    />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
@@ -21,7 +18,6 @@ const { locale, defaultLocale } = useI18n()
 const { isHomePage, isInfoPage, isInfoKoSurface } = useSiteRoute()
 const localeHead = useLocaleHead({ seo: true })
 const settings = computed(() => sanityStore.settings as any)
-const gifSources = computed(() => settings.value?.gifs || [])
 
 import imageUrlBuilder from "@sanity/image-url"
 const builder = imageUrlBuilder((useSanity() as any).config as any)
@@ -64,21 +60,17 @@ const seoImageUrl = computed(() =>
 // Emit hreflang alternates and html lang attribute
 useHead(localeHead)
 
-/** Single source of truth for document surface + demon mode (survives layout/page transitions). */
 useHead(() => ({
   htmlAttrs: {
     class: {
       'demon-mode': mainStore.demonMode,
-      'info-surface--ko': isInfoKoSurface.value,
     },
   },
-  bodyAttrs: {
-    class: {
-      'demon-mode': mainStore.demonMode,
-      'info-surface--ko': isInfoKoSurface.value,
-      'overflow-hidden': isHomePage.value,
-    },
-  },
+  // bodyAttrs: {
+  //   class: {
+  //     'info-surface--ko': isInfoKoSurface.value,
+  //   },
+  // },
 }))
 
 useHead(() => ({

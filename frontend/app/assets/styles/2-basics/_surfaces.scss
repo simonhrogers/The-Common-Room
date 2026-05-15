@@ -4,6 +4,7 @@ html {
   color-scheme: dark;
   background-color: #000;
   color: #fff;
+  transition: color .2s, background-color .2s;
 }
 
 html.info-surface--ko {
@@ -23,4 +24,11 @@ html #app,
 html.info-surface--ko ::selection {
   background: var(--selection-bg);
   color: var(--selection-fg);
+}
+
+.white-background {
+  color-scheme: light;
+  background-color: #fff;
+  color: #000;
+  transition: color .2s, background-color .2s;
 }

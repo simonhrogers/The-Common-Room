@@ -61,10 +61,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: 'info',
-})
-
 const { locale, defaultLocale, t } = useI18n()
 
 const infoQuery = groq`*[_id == "information"][0]{
@@ -103,6 +99,12 @@ const backToTopLabel = computed(() => {
   // Tie to locale so copy updates on client i18n switch without remounting the page.
   const _loc = locale.value
   return t('info.backToTop')
+})
+
+useHead({
+  htmlAttrs: {
+    class: computed(() => locale.value === 'ko' ? 'white-background' : ''),
+  },
 })
 
 </script>
