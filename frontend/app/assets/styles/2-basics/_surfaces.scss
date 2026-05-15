@@ -1,19 +1,26 @@
-/* Document surface tokens — toggled via html classes from app.vue useHead */
+/* Document surface — explicit html colors so text contrast is correct on first paint */
 
-html,
+html {
+  color-scheme: dark;
+  background-color: #000;
+  color: #fff;
+}
+
+html.info-surface--ko {
+  color-scheme: light;
+  background-color: #fff;
+  color: #000;
+}
+
 html body,
 html #__nuxt,
-html #app {
-  background-color: var(--surface-bg);
-  color: var(--surface-fg);
+html #app,
+.layout-info {
+  background-color: transparent;
+  color: inherit;
 }
 
 html.info-surface--ko ::selection {
   background: var(--selection-bg);
   color: var(--selection-fg);
-}
-
-.layout-info--ko {
-  background-color: var(--surface-bg);
-  color: var(--surface-fg);
 }

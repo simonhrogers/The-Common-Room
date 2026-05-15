@@ -22,6 +22,19 @@ export function pathIsHome(path, defaultLocale, localeCodes) {
   return false
 }
 
+/** KO info surface from URL prefix — locale.value can lag behind route on En/Ko navigation. */
+export function pathIsInfoKo(path, defaultLocale, localeCodes) {
+  if (!pathIsInfo(path, defaultLocale, localeCodes)) return false
+  const p = path.replace(/\/+$/, '') || '/'
+  if (p === '/info') return false
+  for (const l of localeCodes) {
+    const code = l.code
+    if (!code || code === defaultLocale) continue
+    if (p === `/${code}/info`) return true
+  }
+  return false
+}
+
 export function useSiteRoute() {
   const route = useRoute()
   const { locales, defaultLocale, locale } = useI18n()
@@ -34,8 +47,8 @@ export function useSiteRoute() {
     pathIsHome(route.path, defaultLocale.value, locales.value),
   )
 
-  const isInfoKoSurface = computed(
-    () => isInfoPage.value && locale.value === 'ko',
+  const isInfoKoSurface = computed(() =>
+    pathIsInfoKo(route.path, defaultLocale.value, locales.value),
   )
 
   return {

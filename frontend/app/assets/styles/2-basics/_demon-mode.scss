@@ -1,9 +1,11 @@
 html.demon-mode:not(.info-surface--ko) {
   --surface-fg: var(--demon-accent);
+  color: var(--demon-accent);
 }
 
 html.demon-mode.info-surface--ko {
   --surface-bg: var(--demon-accent);
+  background-color: var(--demon-accent);
 }
 
 html.demon-mode.info-surface--ko ::selection {

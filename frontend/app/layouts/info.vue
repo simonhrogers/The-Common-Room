@@ -1,15 +1,8 @@
 <template>
-  <div
-    class="layout-info"
-    :class="{ 'layout-info--ko': locale === 'ko' }"
-  >
+  <div class="layout-info">
     <slot />
   </div>
 </template>
-
-<script setup>
-const { locale } = useI18n()
-</script>
 
 <style scoped>
 .layout-info {
