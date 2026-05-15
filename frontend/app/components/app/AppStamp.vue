@@ -2,7 +2,10 @@
   <button
     type="button"
     class="app-stamp"
-    :class="{ 'app-stamp--demon': mainStore.demonMode }"
+    :class="{
+      'app-stamp--demon': mainStore.demonMode,
+      'app-stamp--ko': locale === 'ko',
+    }"
     aria-label="Toggle demon mode"
     @click="mainStore.toggleDemonMode()"
   >
@@ -18,6 +21,7 @@ import StampIcon from '@/assets/svg/stamp.svg?component'
 import { useMainStore } from '@/stores/main'
 
 const mainStore = useMainStore()
+const { locale } = useI18n()
 </script>
 
 <style scoped lang="scss">
@@ -35,8 +39,13 @@ const mainStore = useMainStore()
   animation: slow-spin 30s linear infinite;
 }
 
+/* Demon: white on EN/dark surface, black on KO/light surface (don’t rely on html class — info uses `white-background`). */
 .app-stamp--demon {
   color: #fff;
+}
+
+.app-stamp--demon.app-stamp--ko {
+  color: #000;
 }
 
 .app-stamp__icon {
