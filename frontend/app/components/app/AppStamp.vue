@@ -2,7 +2,7 @@
   <button
     type="button"
     class="app-stamp"
-    :class="{ 'app-stamp--ko': isKoLocale }"
+    :class="{ 'app-stamp--ko-demon': isKoDemonStamp }"
     aria-label="Toggle demon mode"
     @click="mainStore.toggleDemonMode()"
   >
@@ -20,8 +20,10 @@ import { useMainStore } from '@/stores/main'
 const mainStore = useMainStore()
 const { locale } = useI18n()
 
-/** Korean info uses a white surface — stamp reads as black; red elsewhere stays hidden on dark backgrounds. */
-const isKoLocale = computed(() => locale.value === 'ko')
+/** Korean info + demon mode: black stamp on the inverted (red) surface. */
+const isKoDemonStamp = computed(
+  () => locale.value === 'ko' && mainStore.demonMode,
+)
 </script>
 
 <style scoped lang="scss">
@@ -38,7 +40,7 @@ const isKoLocale = computed(() => locale.value === 'ko')
   color: #ff0000;
   animation: slow-spin 30s linear infinite;
 
-  &--ko {
+  &--ko-demon {
     color: #000;
   }
 }

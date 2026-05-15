@@ -1,5 +1,8 @@
 <template>
-  <main class="home">
+  <main
+    class="home"
+    :class="{ 'home--ui-black': homeUiTextColor === 'black' }"
+  >
     <section
       v-if="slides.length > 0"
       class="slideshow"
@@ -42,6 +45,19 @@
       </div>
     </section>
 
+    <nav
+      v-if="slides.length > 0"
+      class="home-info"
+      aria-label="Site"
+    >
+      <NuxtLink
+        :to="localePath('/info')"
+        class="home-info__link"
+      >
+        Info
+      </NuxtLink>
+    </nav>
+
     <!-- Child page overlay (e.g. /about) -->
     <NuxtPage />
   </main>
@@ -56,6 +72,7 @@ useHead({
 
 const homeQuery = groq`*[_id == "home"][0]{
   slideshow[]{
+    uiTextColor,
     images[] {
       alt,
       caption,
@@ -68,10 +85,21 @@ const homeQuery = groq`*[_id == "home"][0]{
 }`
 
 const data = await useSanityData({ query: homeQuery })
+const mainStore = useMainStore()
+const localePath = useLocalePath()
 
 const HOME_SLIDE_INDEX_KEY = 'tcr:homeSlideIndex'
 
 const slides = computed(() => data.value?.slideshow || [])
+
+function slideUiTextColor(slide) {
+  return slide?.uiTextColor === 'black' ? 'black' : 'white'
+}
+
+const homeUiTextColor = computed(() => {
+  const slide = slides.value[currentSlideIndex.value]
+  return slide ? slideUiTextColor(slide) : 'white'
+})
 
 /** `sizes` for srcset — matches slide grid CSS (incl. portrait stack for 2–3 images). */
 function slideImageSizes(imageCount) {
@@ -131,6 +159,22 @@ watch(currentSlideIndex, (i) => {
   if (!import.meta.client) return
   if (!slides.value.length) return
   sessionStorage.setItem(HOME_SLIDE_INDEX_KEY, String(i))
+})
+
+watch(
+  [currentSlideIndex, () => slides.value.length, homeUiTextColor],
+  ([index, count, uiColor]) => {
+    mainStore.homeSlideIndex = index
+    mainStore.homeSlideCount = count
+    mainStore.homeUiTextColor = uiColor
+  },
+  { immediate: true },
+)
+
+onUnmounted(() => {
+  mainStore.homeSlideIndex = 0
+  mainStore.homeSlideCount = 0
+  mainStore.homeUiTextColor = 'white'
 })
 
 const slideViewportRef = ref(null)
@@ -347,5 +391,42 @@ const handleKeydown = (event) => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+.home-info {
+  position: fixed;
+  right: calc(0.5 * var(--lh-rem));
+  bottom: calc(0.5 * var(--lh-rem));
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.home-info__link {
+  text-decoration: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.home:not(.home--ui-black) .home-info__link {
+  color: #fff;
+  // text-shadow:
+  //   0 0.5px 0 rgba(0, 0, 0, 0.03),
+  //   0 1px 2px rgba(0, 0, 0, 0.02),
+  //   0 0 14px rgba(0, 0, 0, 0.01);
+}
+
+.home.home--ui-black .home-info__link {
+  color: #000;
+  // text-shadow:
+  //   0 0 1px rgba(255, 255, 255, 0.55),
+  //   0 0.5px 0 rgba(255, 255, 255, 0.12),
+  //   0 1px 2px rgba(255, 255, 255, 0.08),
+  //   0 0 14px rgba(255, 255, 255, 0.05);
 }
 </style>

@@ -30,25 +30,41 @@ export default defineType({
               firstImage: 'images.0',
               originalFilename: 'images.0.asset.originalFilename',
               images: 'images',
+              uiTextColor: 'uiTextColor',
             },
-            prepare({ firstImage, originalFilename, images }) {
+            prepare({ firstImage, originalFilename, images, uiTextColor }) {
               const count = previewListLength(images)
               const name =
                 typeof originalFilename === 'string' && originalFilename.trim()
                   ? originalFilename.trim()
                   : 'Slide'
+              const ui = uiTextColor === 'black' ? 'Black UI' : 'White UI'
 
               return {
                 title: name,
                 subtitle:
                   count === 0
-                    ? 'No images'
-                    : `${count} image${count === 1 ? '' : 's'}`,
+                    ? ui
+                    : `${count} image${count === 1 ? '' : 's'} · ${ui}`,
                 media: firstImage,
               }
             },
           },
           fields: [
+            defineField({
+              name: 'uiTextColor',
+              title: 'UI text colour',
+              type: 'string',
+              description: 'Header, slide numbers, and Info link on the homepage for this slide.',
+              options: {
+                list: [
+                  { title: 'White', value: 'white' },
+                  { title: 'Black', value: 'black' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'white',
+            }),
             defineField({
               name: 'images',
               title: 'Images',

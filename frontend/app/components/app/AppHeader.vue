@@ -3,6 +3,7 @@
     class="header"
     :class="{
       'header--home': isHomePage,
+      'header--home-ui-black': isHomePage && homeUiTextColor === 'black',
       'header--info': isInfoPage,
       'header--info-ko': isInfoPage && localeIsKo,
     }"
@@ -36,24 +37,28 @@
           더 커먼룸
         </div>
       </NuxtLink>
-      <nav
-        v-if="!isInfoPage"
-        class="links"
+      <p
+        v-if="isHomePage && homeSlideCount > 0"
+        class="home-slide-meta"
+        aria-live="polite"
+        :aria-label="`Slide ${homeSlideCurrent} of ${homeSlideCount}`"
       >
-        <NuxtLink
-          :to="localePath('/info')"
-          class="link"
-        >
-          Info
-        </NuxtLink>
-      </nav>
+        <span class="home-slide-meta__line">{{ homeSlideCurrent }}</span>
+        <span class="home-slide-meta__line">{{ homeSlideCount }}</span>
+      </p>
     </div>
   </header>
 </template>
 
 <script setup>
 const route = useRoute()
+const mainStore = useMainStore()
 const { locales, defaultLocale, locale } = useI18n()
+const homeSlideCount = computed(() => mainStore.homeSlideCount)
+const homeSlideCurrent = computed(() =>
+  homeSlideCount.value > 0 ? mainStore.homeSlideIndex + 1 : 0,
+)
+const homeUiTextColor = computed(() => mainStore.homeUiTextColor)
 const localeIsKo = computed(() => locale.value === 'ko')
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
@@ -110,13 +115,24 @@ const isHomePage = computed(() =>
   pointer-events: none;
 }
 
-/* Homepage only: faint halos so type stays legible over bright / white image areas */
-.header--home .logo,
-.header--home .header-inner .links .link {
-  text-shadow:
-    0 0.5px 0 rgba(0, 0, 0, 0.03),
-    0 1px 2px rgba(0, 0, 0, 0.02),
-    0 0 14px rgba(0, 0, 0, 0.01);
+/* Homepage white UI (default): faint dark halos over bright image areas */
+.header--home:not(.header--home-ui-black) .logo,
+.header--home:not(.header--home-ui-black) .home-slide-meta {
+  color: #fff;
+  // text-shadow:
+  //   0 0.5px 0 rgba(0, 0, 0, 0.03),
+  //   0 1px 2px rgba(0, 0, 0, 0.02),
+  //   0 0 14px rgba(0, 0, 0, 0.01);
+}
+
+/* Homepage black UI: type + light halos over dark image areas */
+.header--home.header--home-ui-black .logo,
+.header--home.header--home-ui-black .home-slide-meta {
+  color: #000;
+  // text-shadow:
+  //   0 0.5px 0 rgba(255, 255, 255, 0.03),
+  //   0 1px 2px rgba(255, 255, 255, 0.02),
+  //   0 0 14px rgba(255, 255, 255, 0.01);
 }
 
 /* Homepage: ultra-soft vignette wash behind the title row (diffuse, barely there) */
@@ -211,12 +227,17 @@ const isHomePage = computed(() =>
   opacity: 1;
 }
 
-.header-inner .links .link:hover {
-  opacity: 0.5;
+.home-slide-meta {
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  line-height: inherit;
+  font: inherit;
+  letter-spacing: inherit;
 }
 
-.header-inner .links .link.router-link-exact-active:hover {
-  opacity: 1;
+.home-slide-meta__line {
+  display: block;
 }
 
 /* Korean info: match white surface + black type (header sits outside NuxtLayout) */

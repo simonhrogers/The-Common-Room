@@ -1,17 +1,28 @@
-@use "mixins" as *;
+// Fluid root type: min for entire phone range (< 760px), linear scale 760px → 1728px, then capped
+$font-size-min: 23px;
+$font-size-max: 52px; // 3vw at 1728px (previous tablet-up intent)
+$font-scale-from: 760px;
+$font-scale-to: 1728px;
 
-#app, html, body {
-  font-size: 23px;
+#app,
+html,
+body {
+  font-size: clamp(
+    #{$font-size-min},
+    calc(
+      #{$font-size-min} + (#{$font-size-max} - #{$font-size-min})
+        * ((100vw - #{$font-scale-from}) / (#{$font-scale-to} - #{$font-scale-from}))
+    ),
+    #{$font-size-max}
+  );
   font-weight: normal;
   line-height: var(--line-height);
   letter-spacing: var(--letter-spacing);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-tap-highlight-color: transparent;
-  @include tablet-up {
-    font-size: 3vw;
-  }
+
   ::selection {
     background: black;
     color: white;
