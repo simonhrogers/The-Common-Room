@@ -4,7 +4,7 @@ html {
   color-scheme: dark;
   background-color: #000;
   color: #fff;
-  transition: color .2s, background-color .2s;
+  // transition: color .1s, background-color .1s;
 }
 
 html.info-surface--ko {
@@ -30,5 +30,5 @@ html.info-surface--ko ::selection {
   color-scheme: light;
   background-color: #fff;
   color: #000;
-  transition: color .2s, background-color .2s;
+  // transition: color .2s, background-color .2s;
 }
