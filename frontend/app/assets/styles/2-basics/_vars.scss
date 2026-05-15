@@ -1,6 +1,7 @@
 :root {
   --red: rgba(155, 0, 0, 1);
   --red-90: rgba(155, 0, 0, 0.9);
+  --demon-accent: rgb(255, 0, 0);
   --tm: 1rem;
   --line-height: 1.16;
   --letter-spacing: 0em;
@@ -8,4 +9,18 @@
   --lh-rem: calc(var(--line-height) * 1rem);
   --margin-em: calc(var(--line-height) * 1em * 1.25);
   --margin-rem: calc(var(--line-height) * 1rem * 1.25);
+  --link-opacity: 0.3;
+  /* Logo row: top pad + two lines (matches in-flow info header) */
+  --header-block-height: calc(0.5 * var(--lh-rem) + 2 * var(--lh-em));
+  --surface-bg: #000;
+  --surface-fg: #fff;
+  --selection-bg: #000;
+  --selection-fg: #fff;
+}
+
+html.info-surface--ko {
+  --surface-bg: #fff;
+  --surface-fg: #000;
+  --selection-bg: rgba(0, 0, 0, 0.88);
+  --selection-fg: #fff;
 }

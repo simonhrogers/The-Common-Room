@@ -2,7 +2,7 @@
   <button
     type="button"
     class="app-stamp"
-    :class="{ 'app-stamp--ko-demon': isKoDemonStamp }"
+    :class="{ 'app-stamp--demon': mainStore.demonMode }"
     aria-label="Toggle demon mode"
     @click="mainStore.toggleDemonMode()"
   >
@@ -18,12 +18,6 @@ import StampIcon from '@/assets/svg/stamp.svg?component'
 import { useMainStore } from '@/stores/main'
 
 const mainStore = useMainStore()
-const { locale } = useI18n()
-
-/** Korean info + demon mode: black stamp on the inverted (red) surface. */
-const isKoDemonStamp = computed(
-  () => locale.value === 'ko' && mainStore.demonMode,
-)
 </script>
 
 <style scoped lang="scss">
@@ -39,10 +33,10 @@ const isKoDemonStamp = computed(
   cursor: pointer;
   color: #ff0000;
   animation: slow-spin 30s linear infinite;
+}
 
-  &--ko-demon {
-    color: #000;
-  }
+.app-stamp--demon {
+  color: #fff;
 }
 
 .app-stamp__icon {

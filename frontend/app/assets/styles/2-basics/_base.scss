@@ -1,6 +1,6 @@
 html {
-  background-color: black;
-  color: white;
+  background-color: var(--surface-bg);
+  color: var(--surface-fg);
 }
 
 #app, html, body {

@@ -1,0 +1,19 @@
+/* Document surface tokens — toggled via html classes from app.vue useHead */
+
+html,
+html body,
+html #__nuxt,
+html #app {
+  background-color: var(--surface-bg);
+  color: var(--surface-fg);
+}
+
+html.info-surface--ko ::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+.layout-info--ko {
+  background-color: var(--surface-bg);
+  color: var(--surface-fg);
+}

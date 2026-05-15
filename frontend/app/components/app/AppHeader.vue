@@ -5,7 +5,6 @@
       'header--home': isHomePage,
       'header--home-ui-black': isHomePage && homeUiTextColor === 'black',
       'header--info': isInfoPage,
-      'header--info-ko': isInfoPage && localeIsKo,
     }"
   >
     <!-- Info: locale stays fixed; home keeps single fixed bar -->
@@ -33,91 +32,47 @@
         class="logo"
       >
         The Common Room <br>
-        <div class="korean">
-          더 커먼룸
-        </div>
+        더 커먼룸
       </NuxtLink>
-      <p
-        v-if="isHomePage && homeSlideCount > 0"
-        class="home-slide-meta"
-        aria-live="polite"
-        :aria-label="`Slide ${homeSlideCurrent} of ${homeSlideCount}`"
+      <NuxtLink
+        v-if="isHomePage"
+        :to="localePath('/info')"
+        class="home-header-info"
       >
-        <span class="home-slide-meta__line">{{ homeSlideCurrent }}</span>
-        <span class="home-slide-meta__line">{{ homeSlideCount }}</span>
-      </p>
+        Info
+      </NuxtLink>
     </div>
   </header>
 </template>
 
 <script setup>
-const route = useRoute()
 const mainStore = useMainStore()
-const { locales, defaultLocale, locale } = useI18n()
-const homeSlideCount = computed(() => mainStore.homeSlideCount)
-const homeSlideCurrent = computed(() =>
-  homeSlideCount.value > 0 ? mainStore.homeSlideIndex + 1 : 0,
-)
+const { locale, locales, defaultLocale } = useI18n()
+const { isInfoPage, isHomePage } = useSiteRoute()
 const homeUiTextColor = computed(() => mainStore.homeUiTextColor)
-const localeIsKo = computed(() => locale.value === 'ko')
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 
-/**
- * Path-based so it stays true during i18n locale navigations.
- * `route.path === localePath('/info')` can briefly be false while locale updates, which flashes "Info".
- */
-function pathIsInfo(path, defaultLocale, localeCodes) {
-  const p = path.replace(/\/+$/, '') || '/'
-  if (p === '/info') return true
-  for (const l of localeCodes) {
-    const code = l.code
-    if (!code || code === defaultLocale) continue
-    if (p === `/${code}/info`) return true
-  }
-  return false
-}
-
-const isInfoPage = computed(() =>
-  pathIsInfo(route.path, defaultLocale.value, locales.value),
-)
-
-/** Index route only (default + prefixed locales), for header treatment over the slideshow. */
-function pathIsHome(path, defaultLocale, localeCodes) {
-  const p = path.replace(/\/+$/, '') || '/'
-  if (p === '/') return true
-  for (const l of localeCodes) {
-    const code = l.code
-    if (!code || code === defaultLocale) continue
-    if (p === `/${code}`) return true
-  }
-  return false
-}
-
-const isHomePage = computed(() =>
-  pathIsHome(route.path, defaultLocale.value, locales.value)
-)
 </script>
 
 <style scoped lang="scss">
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   z-index: 20;
   pointer-events: none;
 }
 
-.header--info {
-  position: static;
-  padding: 0;
-  pointer-events: none;
+/* Homepage only: overlay slideshow */
+.header--home {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 /* Homepage white UI (default): faint dark halos over bright image areas */
 .header--home:not(.header--home-ui-black) .logo,
-.header--home:not(.header--home-ui-black) .home-slide-meta {
+.header--home:not(.header--home-ui-black) .home-header-info {
   color: #fff;
   // text-shadow:
   //   0 0.5px 0 rgba(0, 0, 0, 0.03),
@@ -127,7 +82,7 @@ const isHomePage = computed(() =>
 
 /* Homepage black UI: type + light halos over dark image areas */
 .header--home.header--home-ui-black .logo,
-.header--home.header--home-ui-black .home-slide-meta {
+.header--home.header--home-ui-black .home-header-info {
   color: #000;
   // text-shadow:
   //   0 0.5px 0 rgba(255, 255, 255, 0.03),
@@ -192,6 +147,11 @@ const isHomePage = computed(() =>
 .logo {
   text-decoration: none;
   color: inherit;
+  line-height: var(--line-height);
+
+  .korean {
+    line-height: var(--line-height);
+  }
 }
 
 .links {
@@ -210,7 +170,7 @@ const isHomePage = computed(() =>
 
 /* Locale (En / Ko): active full strength; inactive 50%; inactive → full on hover */
 .header-locale-fixed .link {
-  opacity: 0.5;
+  opacity: var(--link-opacity);
 
   &.link--locale-active,
   &:hover {
@@ -220,24 +180,23 @@ const isHomePage = computed(() =>
 
 /* Logo + Info: dim on hover unless that link is the current page */
 .header-inner > .logo:hover {
-  opacity: 0.5;
+  opacity: var(--link-opacity);
 }
 
 .header-inner > .logo.router-link-exact-active:hover {
   opacity: 1;
 }
 
-.home-slide-meta {
-  margin: 0;
-  padding: 0;
-  text-align: right;
-  line-height: inherit;
-  font: inherit;
-  letter-spacing: inherit;
+.header-inner > .home-header-info:hover {
+  opacity: var(--link-opacity);
 }
 
-.home-slide-meta__line {
-  display: block;
+.home-header-info {
+  text-decoration: none;
+  color: inherit;
+  font: inherit;
+  line-height: var(--line-height);
+  letter-spacing: inherit;
 }
 
 /* Korean info: match white surface + black type (header sits outside NuxtLayout) */

@@ -45,18 +45,15 @@
       </div>
     </section>
 
-    <nav
+    <p
       v-if="slides.length > 0"
-      class="home-info"
-      aria-label="Site"
+      class="home-slide-meta"
+      aria-live="polite"
+      :aria-label="`Slide ${homeSlideCurrent} of ${homeSlideCount}`"
     >
-      <NuxtLink
-        :to="localePath('/info')"
-        class="home-info__link"
-      >
-        Info
-      </NuxtLink>
-    </nav>
+      <span class="home-slide-meta__line">{{ homeSlideCurrent }}</span>
+      <span class="home-slide-meta__line">{{ homeSlideCount }}</span>
+    </p>
 
     <!-- Child page overlay (e.g. /about) -->
     <NuxtPage />
@@ -64,12 +61,6 @@
 </template>
 
 <script setup>
-useHead({
-  bodyAttrs: {
-    class: 'overflow-hidden',
-  },
-})
-
 const homeQuery = groq`*[_id == "home"][0]{
   slideshow[]{
     uiTextColor,
@@ -85,8 +76,18 @@ const homeQuery = groq`*[_id == "home"][0]{
 }`
 
 const data = await useSanityData({ query: homeQuery })
+const sanityStore = useSanityStore()
 const mainStore = useMainStore()
-const localePath = useLocalePath()
+
+usePageHead({
+  title: '',
+  seo: computed(() => sanityStore.settings?.seo),
+})
+
+const homeSlideCount = computed(() => mainStore.homeSlideCount)
+const homeSlideCurrent = computed(() =>
+  homeSlideCount.value > 0 ? mainStore.homeSlideIndex + 1 : 0,
+)
 
 const HOME_SLIDE_INDEX_KEY = 'tcr:homeSlideIndex'
 
@@ -393,40 +394,30 @@ const handleKeydown = (event) => {
   grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
-.home-info {
+.home-slide-meta {
   position: fixed;
   right: calc(0.5 * var(--lh-rem));
-  bottom: calc(0.5 * var(--lh-rem));
+  bottom: calc(0.275 * var(--lh-rem));
+  // bottom: 0.5rem;
   z-index: 20;
-  pointer-events: auto;
-}
-
-.home-info__link {
-  text-decoration: none;
-  color: inherit;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  line-height: var(--line-height);
   font: inherit;
-  line-height: inherit;
   letter-spacing: inherit;
-
-  &:hover {
-    opacity: 0.5;
-  }
+  pointer-events: none;
 }
 
-.home:not(.home--ui-black) .home-info__link {
+.home-slide-meta__line {
+  display: block;
+}
+
+.home:not(.home--ui-black) .home-slide-meta {
   color: #fff;
-  // text-shadow:
-  //   0 0.5px 0 rgba(0, 0, 0, 0.03),
-  //   0 1px 2px rgba(0, 0, 0, 0.02),
-  //   0 0 14px rgba(0, 0, 0, 0.01);
 }
 
-.home.home--ui-black .home-info__link {
+.home.home--ui-black .home-slide-meta {
   color: #000;
-  // text-shadow:
-  //   0 0 1px rgba(255, 255, 255, 0.55),
-  //   0 0.5px 0 rgba(255, 255, 255, 0.12),
-  //   0 1px 2px rgba(255, 255, 255, 0.08),
-  //   0 0 14px rgba(255, 255, 255, 0.05);
 }
 </style>

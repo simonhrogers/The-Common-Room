@@ -1,17 +1,18 @@
-/* Easter egg: swap explicit white surfaces / type to rgb red (see plugins/demon-mode.client.js) */
-html.demon-mode {
-  color: rgb(255, 0, 0) !important;
+html.demon-mode:not(.info-surface--ko) {
+  --surface-fg: var(--demon-accent);
 }
 
-html.demon-mode.info-surface--ko,
-html.demon-mode.info-surface--ko body,
-html.demon-mode.info-surface--ko #__nuxt,
-html.demon-mode.info-surface--ko #app,
-html.demon-mode .layout-info--ko {
-  background-color: rgb(255, 0, 0) !important;
+html.demon-mode.info-surface--ko {
+  --surface-bg: var(--demon-accent);
 }
 
-html.demon-mode .layout-info--ko *::selection,
 html.demon-mode.info-surface--ko ::selection {
-  color: rgb(255, 0, 0) !important;
+  --selection-fg: var(--demon-accent);
+}
+
+/* Homepage UI uses explicit white/black per slide — swap white → demon red */
+html.demon-mode .header--home:not(.header--home-ui-black) .logo,
+html.demon-mode .header--home:not(.header--home-ui-black) .home-header-info,
+html.demon-mode .home:not(.home--ui-black) .home-slide-meta {
+  color: var(--demon-accent);
 }

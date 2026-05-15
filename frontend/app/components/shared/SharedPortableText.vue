@@ -50,6 +50,7 @@ const { value } = toRefs(props)
 <style lang="scss">
 .portable-text {
   width: fit-content;
+  line-height: var(--line-height);
   white-space: pre-line;
   // @include text-width;
   &.stealth-links {
@@ -104,6 +105,11 @@ const { value } = toRefs(props)
     font-size: 1em;
     text-wrap: balance;
   }
+  p,
+  li {
+    line-height: var(--line-height);
+  }
+
   p, ul, ol {
     & + p, & + ul, & + ol {
       margin-top: var(--lh-em);

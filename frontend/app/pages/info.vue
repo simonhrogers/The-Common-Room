@@ -16,19 +16,6 @@
       >
         <SharedPortableText :value="data.contact" />
       </section>
-      <section
-        v-if="data.pressRelease?.file"
-        class="info-block"
-      >
-        <a
-          :href="data.pressRelease.file"
-          class="press-release-link"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {{ pressReleaseTitle }}
-        </a>
-      </section>
       <p class="info-back-to-top">
         <button
           type="button"
@@ -51,7 +38,7 @@
           href="https://www.christopherlawson.ltd/"
           target="_blank"
           rel="noopener noreferrer"
-        >Christopher Lawson Ltd.</a>
+        >Christopher Lawson Ltd</a>
       </p>
       <p class="info-credits">
         Development:
@@ -62,7 +49,12 @@
         >Simon Rogers</a>
       </p>
       <p class="info-credits">
-        Photography: Hanna Moon
+        Photography:
+        <a
+          href="https://hanna-moon.tumblr.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Hanna Moon</a>
       </p>
     </footer>
   </div>
@@ -78,10 +70,6 @@ const { locale, defaultLocale, t } = useI18n()
 const infoQuery = groq`*[_id == "information"][0]{
   "information": information[$locale],
   "contact": contact[$locale],
-  pressRelease {
-    title,
-    "file": file[$locale].asset->url,
-  },
 }`
 
 /** Stable locale for GROQ; empty/undefined breaks information[$locale] and drops the whole query. */
@@ -94,27 +82,17 @@ watch(locale, () => {
 })
 
 const data = await useSanityData({ query: infoQuery, params: queryParams })
+const sanityStore = useSanityStore()
 
-function pickInternationalizedTitle(entries, loc, fallback) {
-  if (!entries || !Array.isArray(entries)) return ''
-  const code = (loc || fallback || 'en').toString()
-  const def = (fallback || 'en').toString()
-  const matches = (row, c) => row && (row.language === c || row._key === c)
-  return (
-    entries.find((t) => matches(t, code))?.value
-    ?? entries.find((t) => matches(t, def))?.value
-    ?? entries[0]?.value
-    ?? ''
-  )
-}
+const infoPageTitle = computed(() => {
+  const _loc = locale.value
+  return t('info.title')
+})
 
-const pressReleaseTitle = computed(() =>
-  pickInternationalizedTitle(
-    data.value?.pressRelease?.title,
-    locale.value,
-    defaultLocale.value,
-  ),
-)
+usePageHead({
+  title: infoPageTitle,
+  seo: computed(() => sanityStore.settings?.seo),
+})
 
 function scrollToTop() {
   if (!import.meta.client) return
@@ -127,9 +105,6 @@ const backToTopLabel = computed(() => {
   return t('info.backToTop')
 })
 
-useHead({
-  title: 'Info',
-})
 </script>
 
 <style lang="scss" scoped>
@@ -141,7 +116,6 @@ useHead({
   margin: calc(0.5 * var(--lh-rem));
   margin-top: 0;
   box-sizing: border-box;
-
 }
 
 .info-body {
@@ -180,7 +154,7 @@ useHead({
   text-decoration: none;
 
   &:hover {
-    opacity: 0.5;
+    opacity: var(--link-opacity);
   }
 }
 
@@ -203,7 +177,7 @@ button.press-release-link {
   display: flex;
   flex-direction: column;
   font-size: 0.5rem;
-  line-height: inherit;
+  line-height: var(--line-height);
   @include tablet-up {
     flex-direction: row;
     gap: var(--lh-em);
@@ -220,7 +194,7 @@ button.press-release-link {
   text-decoration: none;
 
   &:hover {
-    opacity: 0.5;
+    opacity: var(--link-opacity);
   }
 }
 </style>

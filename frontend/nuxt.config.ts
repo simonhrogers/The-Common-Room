@@ -3,7 +3,20 @@ import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-20',
-  
+
+  app: {
+    // Crossfade only the page — layout transition + out-in caused info→home to “scroll up”
+    pageTransition: { name: 'fade', mode: 'default' },
+  },
+
+  router: {
+    options: {
+      scrollBehavior() {
+        return { top: 0 }
+      },
+    },
+  },
+
   routeRules: {
     '/': { isr: 1800 },
     '/about': { isr: 1800 },

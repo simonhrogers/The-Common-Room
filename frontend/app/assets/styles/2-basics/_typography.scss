@@ -1,18 +1,21 @@
-// Fluid root type: min for entire phone range (< 760px), linear scale 760px → 1728px, then capped
+// Fluid root type: min below ~760px, linear scale 760px → 1728px, capped at max.
+// Safari breaks clamp() when the preferred value is calc() mixing px + vw — use a plain
+// vw middle term instead (Piper Haywood: piperhaywood.com/fluid-type-sizes-and-spacing).
 $font-size-min: 23px;
-$font-size-max: 52px; // 3vw at 1728px (previous tablet-up intent)
-$font-scale-from: 760px;
-$font-scale-to: 1728px;
+$font-size-max: 52px;
+$font-scale-to: 1728px; // 52px here; clamp(min) holds ~23px down to ~760px viewport
+
+// 52px at 1728px — plain vw middle term (no calc) for Safari
+$font-size-vw: ($font-size-max / 1px) / ($font-scale-to / 1px) * 100;
 
 #app,
 html,
 body {
+  // Forces Safari to recalc viewport-based font-size on resize (CSS-Tricks / WebKit bug)
+  -webkit-marquee-increment: 0vw;
   font-size: clamp(
     #{$font-size-min},
-    calc(
-      #{$font-size-min} + (#{$font-size-max} - #{$font-size-min})
-        * ((100vw - #{$font-scale-from}) / (#{$font-scale-to} - #{$font-scale-from}))
-    ),
+    #{$font-size-vw}vw,
     #{$font-size-max}
   );
   font-weight: normal;
@@ -24,7 +27,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 
   ::selection {
-    background: black;
-    color: white;
+    background: var(--selection-bg);
+    color: var(--selection-fg);
   }
 }

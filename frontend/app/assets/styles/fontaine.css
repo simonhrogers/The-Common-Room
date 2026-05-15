@@ -25,4 +25,5 @@ body {
 
 .korean {
   font-family: 'Diatype', sans-serif;
+  line-height: var(--line-height);
 }
