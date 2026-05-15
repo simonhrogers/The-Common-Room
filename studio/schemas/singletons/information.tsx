@@ -6,8 +6,8 @@ const localeBlockContent = (name: string, title: string) => defineField({
   title,
   type: 'object',
   fields: [
-    defineField({ name: 'en', title: 'English', type: 'blockContentSimple' }),
-    defineField({ name: 'ko', title: '한국어', type: 'blockContentSimple' }),
+    defineField({ name: 'en', title: 'English', type: 'blockContent' }),
+    defineField({ name: 'ko', title: '한국어', type: 'blockContent' }),
   ],
 })
 

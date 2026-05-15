@@ -28,11 +28,12 @@ export default defineType({
       // use your content.
       styles: [
         {title: 'Body', value: 'normal'},
-        {title: 'Title', value: 'h5'},
         // {title: 'Subtitle', value: 'h5'},
         // {title: 'Quote', value: 'blockquote'},
       ],
-      lists: [{title: 'Bullet', value: 'bullet'}],
+      lists: [
+        // {title: 'Bullet', value: 'bullet'}
+      ],
       // Marks let you mark up inline text in the block editor.
       marks: {
         // Decorators usually describe a single property – e.g. a typographic
@@ -63,22 +64,22 @@ export default defineType({
               }
             ]
           },
-          {
-            title: 'Download',
-            name: 'download',
-            type: 'object',
-            icon: DownloadIcon,
-            fields: [
-              {
-                title: 'PDF',
-                name: 'file',
-                type: 'file',
-                options: {
-                  accept: '.pdf',
-                },
-              }
-            ]
-          }
+          // {
+          //   title: 'Download',
+          //   name: 'download',
+          //   type: 'object',
+          //   icon: DownloadIcon,
+          //   fields: [
+          //     {
+          //       title: 'PDF',
+          //       name: 'file',
+          //       type: 'file',
+          //       options: {
+          //         accept: '.pdf',
+          //       },
+          //     }
+          //   ]
+          // }
         //  {
         //    title: 'Internal Link',
         //    name: 'linkInternal',

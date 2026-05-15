@@ -47,6 +47,7 @@ const resolvedHref = computed(() => {
   // @include underline;
   &:hover {
     text-decoration: none;
+    opacity: 0.5;
   }
 }
 
