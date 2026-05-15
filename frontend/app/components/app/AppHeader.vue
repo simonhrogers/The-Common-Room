@@ -114,7 +114,6 @@ const isHomePage = computed(() =>
 .header--home .logo,
 .header--home .header-inner .links .link {
   text-shadow:
-    0 0 1px rgba(255, 255, 255, 0.55),
     0 0.5px 0 rgba(0, 0, 0, 0.03),
     0 1px 2px rgba(0, 0, 0, 0.02),
     0 0 14px rgba(0, 0, 0, 0.01);

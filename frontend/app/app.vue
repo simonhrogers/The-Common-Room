@@ -1,20 +1,16 @@
 <template>
   <AppHeader />
-  <GifSprinkles />
-
   <!-- Main -->
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-
-  <!-- <AppFooter /> -->
 </template>
 
 <script setup lang="ts">
 const sanityStore = useSanityStore()
+const mainStore = useMainStore()
 const route = useRoute()
 const config = useRuntimeConfig()
-const gifsStore = useGifsStore()
 const { locale, defaultLocale } = useI18n()
 const localeHead = useLocaleHead({ seo: true })
 const settings = computed(() => sanityStore.settings as any)
@@ -65,7 +61,11 @@ useHead(() => ({
   titleTemplate: (title) => (title ? `${title} | ${siteTitle.value}` : siteTitle.value),
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=5' },
-    { key: 'theme-color', name: 'theme-color', content: '#FFFFFF' },
+    {
+      key: 'theme-color',
+      name: 'theme-color',
+      content: mainStore.demonMode ? 'rgb(255, 0, 0)' : '#FFFFFF',
+    },
     { property: 'og:title', content: siteTitle.value },
     { property: 'og:site_name', content: siteTitle.value },
     { property: 'og:url', content: `${config.public.BASE_URL}${route.fullPath}` },
@@ -106,39 +106,4 @@ useHead(() => ({
   ],
 }))
 
-let idleTimeout: number | null = null
-const idleMs = 30_000
-
-const markInteraction = () => {
-  gifsStore.stopAndClear()
-  if (idleTimeout) window.clearTimeout(idleTimeout)
-  idleTimeout = window.setTimeout(() => {
-    gifsStore.startIdle(gifSources.value)
-  }, idleMs)
-}
-
-onMounted(() => {
-  if (!import.meta.client) return
-  // Start idle timer immediately on load
-  markInteraction()
-
-  const opts = { passive: true } as AddEventListenerOptions
-  window.addEventListener('mousemove', markInteraction, opts)
-  window.addEventListener('mousedown', markInteraction, opts)
-  window.addEventListener('keydown', markInteraction, opts)
-  window.addEventListener('wheel', markInteraction, opts)
-  window.addEventListener('touchstart', markInteraction, opts)
-  window.addEventListener('pointerdown', markInteraction, opts)
-})
-
-onBeforeUnmount(() => {
-  if (!import.meta.client) return
-  window.removeEventListener('mousemove', markInteraction)
-  window.removeEventListener('mousedown', markInteraction)
-  window.removeEventListener('keydown', markInteraction)
-  window.removeEventListener('wheel', markInteraction)
-  window.removeEventListener('touchstart', markInteraction)
-  window.removeEventListener('pointerdown', markInteraction)
-  if (idleTimeout) window.clearTimeout(idleTimeout)
-})
 </script>
