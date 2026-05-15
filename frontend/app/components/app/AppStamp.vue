@@ -15,5 +15,15 @@
   display: inline-block;
   vertical-align: bottom;
   object-fit: contain;
+  animation: slow-spin 30s linear infinite;
+}
+
+@keyframes slow-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
