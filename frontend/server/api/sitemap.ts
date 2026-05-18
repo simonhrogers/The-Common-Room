@@ -11,11 +11,11 @@ export default defineSitemapEventHandler(async () => {
       ],
     },
     {
-      loc: '/about',
+      loc: '/info',
       alternatives: [
-        { hreflang: 'en', href: '/about' },
-        { hreflang: 'ko', href: '/ko/about' },
-        { hreflang: 'x-default', href: '/about' },
+        { hreflang: 'en', href: '/info' },
+        { hreflang: 'ko', href: '/ko/info' },
+        { hreflang: 'x-default', href: '/info' },
       ],
     },
     {
@@ -27,11 +27,11 @@ export default defineSitemapEventHandler(async () => {
       ],
     },
     {
-      loc: '/ko/about',
+      loc: '/ko/info',
       alternatives: [
-        { hreflang: 'en', href: '/about' },
-        { hreflang: 'ko', href: '/ko/about' },
-        { hreflang: 'x-default', href: '/about' },
+        { hreflang: 'en', href: '/info' },
+        { hreflang: 'ko', href: '/ko/info' },
+        { hreflang: 'x-default', href: '/info' },
       ],
     },
   ] satisfies SitemapUrlInput[]
