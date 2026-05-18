@@ -129,4 +129,9 @@ const { value } = toRefs(props)
     }
   }
 }
+
+/* Korean locale — html[lang] from useLocaleHead; avoids reactive class on this component */
+html:lang(ko) .portable-text {
+  word-break: keep-all;
+}
 </style>
