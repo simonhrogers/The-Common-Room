@@ -43,7 +43,7 @@
               :image="image"
               :alt="image.alt || ''"
               class="slide-img"
-              :sizes="slideImageSizes(slide.images?.length ?? 0)"
+              :sizes="slideImageSizes(slide)"
               loading="eager"
               :fetch-priority="i === 0 && ii === 0 ? 'high' : 'low'"
             />
@@ -76,6 +76,7 @@ definePageMeta({
 const homeQuery = groq`*[_id == "home"][0]{
   slideshow[]{
     uiTextColor,
+    insetImage,
     images[] {
       alt,
       caption,
@@ -109,9 +110,12 @@ const homeSlideCurrent = computed(() =>
   homeSlideCount.value > 0 ? mainStore.homeSlideIndex + 1 : 0,
 )
 
-const HOME_SLIDE_INDEX_KEY = 'tcr:homeSlideIndex'
-
 const slides = computed(() => data.value?.slideshow || [])
+
+function clampSlideIndex(index, length) {
+  if (length <= 0) return 0
+  return Math.max(0, Math.min(index, length - 1))
+}
 
 function slideUiTextColor(slide) {
   return slide?.uiTextColor === 'black' ? 'black' : 'white'
@@ -122,10 +126,14 @@ const homeUiTextColor = computed(() => {
   return slide ? slideUiTextColor(slide) : 'white'
 })
 
+/** Square edge for inset slides: 60% of the shortest viewport edge. */
+const INSET_SQUARE_SIZES = 'min(60vw, 60svh)'
+
 /** `sizes` for srcset — matches slide grid CSS (incl. portrait stack for 2–3 images). */
-function slideImageSizes(imageCount) {
-  const n = Number(imageCount) || 0
+function slideImageSizes(slide) {
+  const n = slide?.images?.length ?? 0
   if (n <= 0) return '100vw'
+  if (n === 1 && slide?.insetImage) return INSET_SQUARE_SIZES
   if (n === 1) return '100vw'
   if (n < 4) return '(aspect-ratio < 1) 100vw, 50vw'
   if (n < 9) return '50vw'
@@ -137,19 +145,11 @@ function slideLayoutClass(slide) {
   const n = slide?.images?.length ?? 0
   return {
     'one-image': n === 1,
+    'one-image--inset': n === 1 && slide?.insetImage === true,
     'two-images': n > 1 && n < 4,
     'four-images': n > 3 && n < 9,
     'nine-images': n === 9,
   }
-}
-
-function readStoredSlideIndex(length) {
-  if (!import.meta.client || length <= 0) return 0
-  const raw = sessionStorage.getItem(HOME_SLIDE_INDEX_KEY)
-  if (raw == null) return 0
-  const parsed = Number.parseInt(raw, 10)
-  if (!Number.isFinite(parsed)) return 0
-  return Math.max(0, Math.min(parsed, length - 1))
 }
 
 const currentSlideIndex = ref(0)
@@ -166,20 +166,15 @@ watchEffect(() => {
 })
 
 onBeforeMount(() => {
-  if (!import.meta.client) return
   const n = slides.value.length
-  if (n) currentSlideIndex.value = readStoredSlideIndex(n)
+  if (n) {
+    currentSlideIndex.value = clampSlideIndex(mainStore.homeSlideIndex, n)
+  }
 })
 
 onMounted(async () => {
   if (!slides.value.length) return
   await settleSlideLayerImages(currentSlideIndex.value)
-})
-
-watch(currentSlideIndex, (i) => {
-  if (!import.meta.client) return
-  if (!slides.value.length) return
-  sessionStorage.setItem(HOME_SLIDE_INDEX_KEY, String(i))
 })
 
 watch(
@@ -193,7 +188,6 @@ watch(
 )
 
 onUnmounted(() => {
-  mainStore.homeSlideIndex = 0
   mainStore.homeSlideCount = 0
   mainStore.homeUiTextColor = 'white'
 })
@@ -336,7 +330,6 @@ const handleKeydown = (event) => {
   justify-content: center;
   /* White UI → black surround; black UI → white (matches header / slide meta) */
   background-color: #000;
-  transition: background-color var(--surface-transition-duration) ease;
 }
 
 .home--ui-black .slideshow {
@@ -364,6 +357,7 @@ const handleKeydown = (event) => {
   pointer-events: none;
   z-index: 0;
   background-color: #000;
+  transition: none;
 }
 
 .slide-stack__item--ui-black {
@@ -402,6 +396,20 @@ const handleKeydown = (event) => {
   grid-template-rows: 1fr;
   justify-content: stretch;
   align-content: stretch;
+}
+
+/* Single image, inset: square = 60% of shortest screen edge, image contained */
+.one-image.one-image--inset {
+  place-items: center;
+
+  :deep(img.slide-img) {
+    width: min(60vw, 60svh) !important;
+    height: min(60vw, 60svh) !important;
+    max-width: min(60vw, 60svh);
+    max-height: min(60vw, 60svh);
+    object-fit: contain !important;
+    aspect-ratio: 1 / 1;
+  }
 }
 
 .two-images {

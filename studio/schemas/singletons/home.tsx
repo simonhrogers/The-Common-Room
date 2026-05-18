@@ -31,21 +31,26 @@ export default defineType({
               originalFilename: 'images.0.asset.originalFilename',
               images: 'images',
               uiTextColor: 'uiTextColor',
+              insetImage: 'insetImage',
             },
-            prepare({ firstImage, originalFilename, images, uiTextColor }) {
+            prepare({ firstImage, originalFilename, images, uiTextColor, insetImage }) {
               const count = previewListLength(images)
               const name =
                 typeof originalFilename === 'string' && originalFilename.trim()
                   ? originalFilename.trim()
                   : 'Slide'
               const ui = uiTextColor === 'black' ? 'Black UI' : 'White UI'
+              const layout =
+                count === 1 && insetImage ? 'Inset' : null
 
               return {
                 title: name,
                 subtitle:
                   count === 0
                     ? ui
-                    : `${count} image${count === 1 ? '' : 's'} · ${ui}`,
+                    : [layout, `${count} image${count === 1 ? '' : 's'}`, ui]
+                        .filter(Boolean)
+                        .join(' · '),
                 media: firstImage,
               }
             },
@@ -64,6 +69,15 @@ export default defineType({
                 layout: 'radio',
               },
               initialValue: 'white',
+            }),
+            defineField({
+              name: 'insetImage',
+              title: 'Inset image',
+              type: 'boolean',
+              description:
+                'Centre the image in a square at 60% of the shortest screen edge (object-fit: contain). Only applies when this slide has a single image.',
+              initialValue: false,
+              hidden: ({ parent }) => previewListLength(parent?.images) !== 1,
             }),
             defineField({
               name: 'images',
