@@ -403,12 +403,18 @@ const handleKeydown = (event) => {
   place-items: center;
 
   :deep(img.slide-img) {
-    width: min(60vw, 60svh) !important;
-    height: min(60vw, 60svh) !important;
-    max-width: min(60vw, 60svh);
-    max-height: min(60vw, 60svh);
+    width: min(80vw, 80svh) !important;
+    height: min(80vw, 80svh) !important;
+    max-width: min(80vw, 80svh);
+    max-height: min(80vw, 80svh);
     object-fit: contain !important;
     aspect-ratio: 1 / 1;
+    @include tablet-up {
+      width: min(60vw, 60svh) !important;
+      height: min(60vw, 60svh) !important;
+      max-width: min(60vw, 60svh);
+      max-height: min(60vw, 60svh);
+    }
   }
 }
 
