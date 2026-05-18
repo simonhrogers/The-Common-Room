@@ -12,9 +12,9 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { isr: 1800 },
-    '/about': { isr: 1800 },
+    '/info': { isr: 1800 },
     '/ko': { isr: 1800 },
-    '/ko/about': { isr: 1800 },
+    '/ko/info': { isr: 1800 },
   },
 
   modules: [
