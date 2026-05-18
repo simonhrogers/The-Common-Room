@@ -455,6 +455,7 @@ const handleKeydown = (event) => {
   font: inherit;
   letter-spacing: inherit;
   pointer-events: none;
+  transition: none;
 }
 
 .home-slide-meta__line {

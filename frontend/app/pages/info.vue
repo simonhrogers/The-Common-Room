@@ -183,12 +183,15 @@ button.press-release-link {
   margin-top: calc(2 * var(--lh-rem));
   display: flex;
   flex-direction: column;
-  font-size: 0.5rem;
+  font-size: 14px;
   line-height: var(--line-height);
   @include tablet-up {
+    font-size: 16px;
+  }
+  @include laptop-up {
     flex-direction: row;
     gap: var(--lh-em);
-    font-size: 0.333rem;
+    font-size: 18px;
   }
 }
 

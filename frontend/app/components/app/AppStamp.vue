@@ -22,8 +22,10 @@ const mainStore = useMainStore()
 
 <style scoped lang="scss">
 .app-stamp {
-  width: calc(2 * var(--lh-em));
-  height: calc(2 * var(--lh-em));
+  // width: calc(2 * var(--lh-rem));
+  // height: calc(2 * var(--lh-rem));
+  width: 108px;
+  height: 108px;
   padding: 0;
   margin: 0;
   border: none;
@@ -33,6 +35,18 @@ const mainStore = useMainStore()
   cursor: pointer;
   color: #ff0000;
   animation: slow-spin 30s linear infinite;
+  @include tablet-up {
+    width: 116px;
+    height: 116px;
+  }
+  @include laptop-up {
+    width: 124px;
+    height: 124px;
+  }
+  @include desktop-up {
+    width: 140px;
+    height: 140px;
+  }
 }
 
 /* Demon: white on dark surface, black on KO/light (`white-background` on html). */

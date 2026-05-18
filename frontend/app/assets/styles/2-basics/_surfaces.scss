@@ -30,10 +30,14 @@ html.white-background ::selection {
   color: var(--selection-fg);
 }
 
-/* Homepage + stamp: explicit colors — always transition for symmetric demon toggle */
-.header--home .logo,
-.header--home .home-header-info,
-.home-slide-meta,
+/* Stamp: colour fades on demon toggle */
 .app-stamp {
   transition: var(--surface-color-transition);
+}
+
+/* Homepage header + slide counter: instant per-slide UI (white/black) */
+.header--home .logo,
+.header--home .home-header-info,
+.home-slide-meta {
+  transition: none;
 }
