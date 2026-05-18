@@ -31,7 +31,10 @@
             :data-slide-index="i"
             :class="[
               slideLayoutClass(slide),
-              { 'slide-stack__item--active': i === currentSlideIndex },
+              {
+                'slide-stack__item--active': i === currentSlideIndex,
+                'slide-stack__item--ui-black': slideUiTextColor(slide) === 'black',
+              },
             ]"
           >
             <SharedSanityImage
@@ -65,6 +68,11 @@
 </template>
 
 <script setup>
+definePageMeta({
+  pageTransition: pageTransition(),
+  middleware: 'transition',
+})
+
 const homeQuery = groq`*[_id == "home"][0]{
   slideshow[]{
     uiTextColor,
@@ -326,6 +334,13 @@ const handleKeydown = (event) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* White UI → black surround; black UI → white (matches header / slide meta) */
+  background-color: #000;
+  transition: background-color var(--surface-transition-duration) ease;
+}
+
+.home--ui-black .slideshow {
+  background-color: #fff;
 }
 
 .slide-viewport {
@@ -348,6 +363,11 @@ const handleKeydown = (event) => {
   visibility: hidden;
   pointer-events: none;
   z-index: 0;
+  background-color: #000;
+}
+
+.slide-stack__item--ui-black {
+  background-color: #fff;
 }
 
 .slide-stack__item--active {
@@ -362,6 +382,7 @@ const handleKeydown = (event) => {
   box-sizing: border-box;
   min-width: 0;
   min-height: 0;
+  background-color: inherit;
 }
 
 /* Fill slide / grid cells: override intrinsic aspect-ratio from Sanity so object-fit can cover the cell */

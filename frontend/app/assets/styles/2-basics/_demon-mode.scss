@@ -1,14 +1,16 @@
-html.demon-mode:not(.info-surface--ko) {
+/* Dark document surface: demon red type */
+html.demon-mode:not(.info-surface--ko):not(.white-background) {
   --surface-fg: var(--demon-accent);
-  color: var(--demon-accent);
 }
 
-html.demon-mode.info-surface--ko {
+/* Light document surface (KO info uses `white-background` on html) */
+html.demon-mode.info-surface--ko,
+html.demon-mode.white-background {
   --surface-bg: var(--demon-accent);
-  background-color: var(--demon-accent);
 }
 
-html.demon-mode.info-surface--ko ::selection {
+html.demon-mode.info-surface--ko ::selection,
+html.demon-mode.white-background ::selection {
   --selection-fg: var(--demon-accent);
 }
 

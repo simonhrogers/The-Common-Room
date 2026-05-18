@@ -19,7 +19,7 @@ const availableLocales = computed(() =>
   </nav>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .language-switcher {
   position: fixed;
   top: calc(1 * var(--lh-rem));
@@ -32,9 +32,9 @@ const availableLocales = computed(() =>
 .language-switcher a {
   color: inherit;
   text-decoration: none;
-}
 
-.language-switcher a:hover {
-  text-decoration: underline;
+  @include hover {
+    text-decoration: underline;
+  }
 }
 </style>

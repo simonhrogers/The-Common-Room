@@ -35,6 +35,15 @@ export function pathIsInfoKo(path, defaultLocale, localeCodes) {
   return false
 }
 
+/** Fade when navigating between homepage and info (either direction). */
+export function shouldFadeHomeInfo(fromPath, toPath, defaultLocale, localeCodes) {
+  const fromHome = pathIsHome(fromPath, defaultLocale, localeCodes)
+  const fromInfo = pathIsInfo(fromPath, defaultLocale, localeCodes)
+  const toHome = pathIsHome(toPath, defaultLocale, localeCodes)
+  const toInfo = pathIsInfo(toPath, defaultLocale, localeCodes)
+  return (fromHome && toInfo) || (fromInfo && toHome)
+}
+
 export function useSiteRoute() {
   const route = useRoute()
   const { locales, defaultLocale, locale } = useI18n()

@@ -2,15 +2,18 @@
 
 html {
   color-scheme: dark;
-  background-color: #000;
-  color: #fff;
-  // transition: color .1s, background-color .1s;
+  color: var(--surface-fg);
+  background-color: var(--surface-bg);
+  transition:
+    --surface-fg var(--surface-transition-duration) ease,
+    --surface-bg var(--surface-transition-duration) ease,
+    color var(--surface-transition-duration) ease,
+    background-color var(--surface-transition-duration) ease;
 }
 
-html.info-surface--ko {
+html.info-surface--ko,
+html.white-background {
   color-scheme: light;
-  background-color: #fff;
-  color: #000;
 }
 
 html body,
@@ -21,14 +24,16 @@ html #app,
   color: inherit;
 }
 
-html.info-surface--ko ::selection {
+html.info-surface--ko ::selection,
+html.white-background ::selection {
   background: var(--selection-bg);
   color: var(--selection-fg);
 }
 
-.white-background {
-  color-scheme: light;
-  background-color: #fff;
-  color: #000;
-  // transition: color .2s, background-color .2s;
+/* Homepage + stamp: explicit colors — always transition for symmetric demon toggle */
+.header--home .logo,
+.header--home .home-header-info,
+.home-slide-meta,
+.app-stamp {
+  transition: var(--surface-color-transition);
 }

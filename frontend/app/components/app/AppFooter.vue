@@ -38,7 +38,7 @@ const openSubscribe = () => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .app-footer {
   margin: var(--lh-rem);
   margin-top: calc(4 * var(--lh-rem));
@@ -61,10 +61,10 @@ const openSubscribe = () => {
 .app-footer-link {
   text-decoration: none;
   color: inherit;
-}
 
-.app-footer-link:hover {
-  text-decoration: underline;
+  @include hover {
+    text-decoration: underline;
+  }
 }
 
 .app-footer-copy {

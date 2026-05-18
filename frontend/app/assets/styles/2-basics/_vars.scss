@@ -1,3 +1,16 @@
+/* Interpolatable surface tokens (demon toggle fades symmetrically on html). */
+@property --surface-fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+@property --surface-bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000000;
+}
+
 :root {
   --red: rgba(155, 0, 0, 1);
   --red-90: rgba(155, 0, 0, 0.9);
@@ -12,13 +25,16 @@
   --link-opacity: 0.3;
   /* Logo row: top pad + two lines (matches in-flow info header) */
   --header-block-height: calc(0.5 * var(--lh-rem) + 2 * var(--lh-em));
+  --surface-transition-duration: 0.25s;
+  --surface-color-transition: color var(--surface-transition-duration) ease;
   --surface-bg: #000;
   --surface-fg: #fff;
   --selection-bg: #000;
   --selection-fg: #fff;
 }
 
-html.info-surface--ko {
+html.info-surface--ko,
+html.white-background {
   --surface-bg: #fff;
   --surface-fg: #000;
   --selection-bg: rgba(0, 0, 0, 0.88);

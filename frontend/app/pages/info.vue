@@ -61,6 +61,11 @@
 </template>
 
 <script setup>
+definePageMeta({
+  pageTransition: pageTransition(),
+  middleware: 'transition',
+})
+
 const { locale, defaultLocale, t } = useI18n()
 
 const infoQuery = groq`*[_id == "information"][0]{
@@ -155,7 +160,7 @@ useHead({
   color: inherit;
   text-decoration: none;
 
-  &:hover {
+  @include hover {
     opacity: var(--link-opacity);
   }
 }
@@ -195,7 +200,7 @@ button.press-release-link {
   color: inherit;
   text-decoration: none;
 
-  &:hover {
+  @include hover {
     opacity: var(--link-opacity);
   }
 }

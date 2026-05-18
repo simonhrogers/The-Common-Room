@@ -57,7 +57,7 @@ const { value } = toRefs(props)
     a {
       color: inherit;
       text-decoration: none;
-      &:hover {
+      @include hover {
         // @include underline;
       }
     }

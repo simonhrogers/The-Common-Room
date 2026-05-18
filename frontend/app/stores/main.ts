@@ -9,12 +9,19 @@ export const useMainStore = defineStore('MainStore', {
       homeSlideCount: 0,
       /** Active homepage slide UI text: `white` (default) or `black` */
       homeUiTextColor: 'white' as 'white' | 'black',
+      /** Active Nuxt page transition name (set by transition middleware). */
+      pageTransition: 'none',
+      /** When true, next navigation keeps `pageTransition` set before navigate. */
+      internalNavigation: false,
 		}
 	},
 
 	actions: {
 		toggleDemonMode() {
 			this.demonMode = !this.demonMode
+		},
+		setPageTransition(transitionName: string) {
+			this.pageTransition = transitionName
 		},
 	},
 })

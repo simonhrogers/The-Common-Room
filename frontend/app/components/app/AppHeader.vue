@@ -182,23 +182,32 @@ const props = defineProps({
 .header-locale-fixed .link {
   opacity: var(--link-opacity);
 
-  &.link--locale-active,
-  &:hover {
+  &.link--locale-active {
+    opacity: 1;
+  }
+
+  @include hover {
     opacity: 1;
   }
 }
 
 /* Logo + Info: dim on hover unless that link is the current page */
-.header-inner > .logo:hover {
-  opacity: var(--link-opacity);
+.header-inner > .logo {
+  @include hover {
+    opacity: var(--link-opacity);
+  }
+
+  &.router-link-exact-active {
+    @include hover {
+      opacity: 1;
+    }
+  }
 }
 
-.header-inner > .logo.router-link-exact-active:hover {
-  opacity: 1;
-}
-
-.header-inner > .home-header-info:hover {
-  opacity: var(--link-opacity);
+.header-inner > .home-header-info {
+  @include hover {
+    opacity: var(--link-opacity);
+  }
 }
 
 .home-header-info {

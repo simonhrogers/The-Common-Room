@@ -45,7 +45,7 @@ const resolvedHref = computed(() => {
 
 .external-link {
   // @include underline;
-  &:hover {
+  @include hover {
     text-decoration: none;
     opacity: var(--link-opacity);
   }

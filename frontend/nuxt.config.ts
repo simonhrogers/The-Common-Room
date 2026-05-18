@@ -4,11 +4,8 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   compatibilityDate: '2026-03-20',
 
-  app: {
-    // pageTransition: { name: 'fade', mode: 'out-in' },
-  },
-
   router: {
+    middleware: ['transition'],
     options: {
     },
   },

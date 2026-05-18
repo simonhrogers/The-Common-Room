@@ -1,7 +1,7 @@
 /* Nuxt page + layout transitions (see nuxt.config app.pageTransition / layoutTransition) */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .2s;
+  transition: opacity .25s;
 }
 
 .fade-enter-from,
