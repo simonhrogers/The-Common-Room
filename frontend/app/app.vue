@@ -63,7 +63,7 @@ useHead(localeHead)
 useHead(() => ({
   htmlAttrs: {
     class: {
-      'demon-mode': mainStore.demonMode,
+      'demon-mode': mainStore.demonMode && isInfoPage.value,
     },
   },
   // bodyAttrs: {
@@ -80,7 +80,7 @@ useHead(() => ({
     {
       key: 'theme-color',
       name: 'theme-color',
-      content: mainStore.demonMode
+      content: mainStore.demonMode && isInfoPage.value
         ? 'rgb(255, 0, 0)'
         : (isInfoKoSurface.value ? '#FFFFFF' : '#000000'),
     },

@@ -13,10 +13,3 @@ html.demon-mode.info-surface--ko ::selection,
 html.demon-mode.white-background ::selection {
   --selection-fg: var(--demon-accent);
 }
-
-/* Homepage UI uses explicit white/black per slide — swap white → demon red */
-html.demon-mode .header--home:not(.header--home-ui-black) .logo,
-html.demon-mode .header--home:not(.header--home-ui-black) .home-header-info,
-html.demon-mode .home:not(.home--ui-black) .home-slide-meta {
-  color: var(--demon-accent);
-}
